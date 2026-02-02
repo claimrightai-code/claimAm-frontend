@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 // import { useRouter } from "next/navigation";
 import { Hero } from "./components/Hero";
 import CountdownSection from "./components/CountdownSection";
@@ -22,7 +22,7 @@ import { ConfettiAlert } from "./components/ConfettiAlert";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { AgentLoginForm } from "./components/AgentLoginModal";
 import { useUserContext } from "@/hooks/hooks";
-import { useSearchParams } from "next/navigation";
+const SearchParamsHandler = React.lazy(() => import("./components/AgentSearchParams"));
 import {
   useAgentStats,
   useReferralNotification,
@@ -57,9 +57,7 @@ export default function App() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [newReferralName, setNewReferralName] = useState("");
-  const searchParams = useSearchParams();
-  const actionParam = searchParams.get("action");
-  const emailParam = searchParams.get("email");
+  const [initialEmail, setInitialEmail] = useState("");
   const { user, logoutFunc } = useUserContext();
   // 2. Fetch Data Directly
   // const { data: stats, isLoading } = useAgentStats();
@@ -89,14 +87,9 @@ export default function App() {
     }
   }, [notification]);
 
-  useEffect(() => {
-    if (actionParam === "login") {
-      setShowLoginModal(true);
+  // Search params handling moved to the client-only `AgentSearchParams` component.
+  // That handler will call `setShowLoginModal(true)` and set `initialEmail` when needed.
 
-      // Optional: Clean URL so a refresh doesn't keep opening it (Good UX)
-      window.history.replaceState(null, "", "/agent");
-    }
-  }, [actionParam]);
 
   // 3. DERIVED STATE: This object rebuilds itself every time 'stats' or 'user' changes
   const agentData: AgentData | null = user
@@ -168,10 +161,18 @@ export default function App() {
         </div>
 
         {/* --- NEW: Login Modal --- */}
+        <Suspense fallback={null}>
+          <SearchParamsHandler
+            onOpenLogin={(email?: string) => {
+              setInitialEmail(email || "");
+              setShowLoginModal(true);
+            }}
+          />
+        </Suspense>
         {showLoginModal && (
           <AgentLoginForm
             onClose={() => setShowLoginModal(false)}
-            initialEmail={emailParam || ""}
+            initialEmail={initialEmail || ""}
             onLoginSuccess={handleLoginComplete}
           />
         )}
