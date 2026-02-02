@@ -41,7 +41,8 @@ export default function CompletePaymentPage() {
   };
 
   if (!user){ 
-    window.location.href = "/agent";
+    // window.location.href = "/agent";
+    router.push("/agent");
     return null;
 };
 
