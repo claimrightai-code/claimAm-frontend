@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { usePaystackPayment } from "react-paystack";
 import { Lock, Briefcase, Loader2, Store, Users } from "lucide-react";
 import { useUserContext } from "@/hooks/hooks";
 
@@ -57,16 +56,32 @@ export function AgentRegistrationForm({
     null,
   );
   const [referalCode, setreferalCode] = useState<string | null>(null);
-  // 3. Initialize Hook with the dynamic config
-  const initializePaystack = usePaystackPayment(paystackConfig);
+  // 3. Initialize Hook with the dynamic config (loaded only on client)
+  const [initializePaystack, setInitializePaystack] = useState<any | null>(null);
 
+  useEffect(() => {
+    let mounted = true;
+    import("react-paystack")
+      .then((mod) => {
+        if (!mounted) return;
+        if (mod?.usePaystackPayment) {
+          setInitializePaystack(() => mod.usePaystackPayment(paystackConfig));
+        }
+      })
+      .catch(() => {});
+    return () => {
+      mounted = false;
+    };
+  }, [paystackConfig]);
 
 
   useEffect(() => {
-  
-  if (readyToPay && paystackConfig.email && paystackConfig.publicKey) {
-    
-   
+  if (
+    readyToPay &&
+    paystackConfig.email &&
+    paystackConfig.publicKey &&
+    initializePaystack
+  ) {
     setReadyToPay(false);
 
     initializePaystack({
@@ -75,14 +90,12 @@ export function AgentRegistrationForm({
         try {
           // verifyPaymentFunc(reference, user_id)
           const verifyRes = await verifyPaymentFunc(txn.reference, registeredAgentId);
-          
-          
+
           if (verifyRes.ok) {
             onPaymentComplete({
               ...formData,
               id: registeredAgentId,
-              referral_code: referalCode
-              
+              referral_code: referalCode,
             });
           } else {
             alert("Payment verification failed: " + (verifyRes.message || "Unknown error"));
@@ -101,7 +114,7 @@ export function AgentRegistrationForm({
     });
   }
 
-}, [readyToPay, paystackConfig]);
+}, [readyToPay, paystackConfig, initializePaystack]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
