@@ -67,34 +67,7 @@ const NIGERIAN_STATES = [
   "Zamfara",
 ];
 
-// Banks in Nigeria
-const [formErrors, setFormErrors] = useState({});
-
-const validateForm = () => {
-  const errors = {};
-  if (!formData.fieldName) {
-    // Replace 'fieldName' with actual field names
-    errors.fieldName = "This field is required";
-  }
-  // Add more validations as needed
-  setFormErrors(errors);
-  return Object.keys(errors).length === 0;
-};
-
-const handleSubmit = (e) => {
-  e.preventDefault();
-  if (validateForm()) {
-    // Proceed with form submission
-  }
-};
-
-<Checkbox
-  checked={formData.checkboxField}
-  onChange={(e) =>
-    setFormData({ ...formData, checkboxField: e.target.checked })
-  }
-  className="text-blue-600"
-/>;
+// Banks in Nigeria;
 const NIGERIAN_BANKS = [
   "Access Bank",
   "Citibank",
@@ -397,7 +370,7 @@ export function ServiceProviderForm() {
 const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-//   if (!validateForm()) return;
+  if (!validateForm()) return;
 
   const toastId = toast.loading("Submitting your application...");
 
