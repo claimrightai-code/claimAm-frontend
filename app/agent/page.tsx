@@ -22,7 +22,18 @@ import { ConfettiAlert } from "./components/ConfettiAlert";
 import { Loader2, LogIn, LogOut } from "lucide-react";
 import { AgentLoginForm } from "./components/AgentLoginModal";
 import { useUserContext } from "@/hooks/hooks";
-const SearchParamsHandler = React.lazy(() => import("./components/AgentSearchParams"));
+import dynamic from "next/dynamic";
+const SearchParamsHandler = React.lazy(
+  () => import("./components/AgentSearchParams"),
+);
+const AgentRegistrationForm = dynamic(
+  () =>
+    import("./components/AgentRegistrationForm").then(
+      (mod) => mod.AgentRegistrationForm,
+    ),
+  { ssr: false },
+);
+
 import {
   useAgentStats,
   useReferralNotification,
