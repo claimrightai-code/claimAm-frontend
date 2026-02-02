@@ -342,7 +342,7 @@ const registerAgentFunc = async (params: any) => {
       naicom_license_id: params.naicomLicenseId || null,
       referral_code: params.referralCode || null,
     };
-    console.log(payload)
+    
     const response = await api.post(`/agents/register`, payload);
     const data = response.data;
     // console.log(data)

@@ -446,10 +446,14 @@ export function AgentRegistrationForm({
                   </>
                 )}
               </button>
-              <p className="text-center text-slate-400 text-xs mt-4 leading-relaxed">
+              <p className="text-center text-slate-500 text-xs mt-4 leading-relaxed">
                 By registering you agree to become a ClaimAm agent.
                 <br />
-               <span className="text-green-50"> Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding slot close.</span>
+                <span className="text-green-50">
+                  {" "}
+                  Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding
+                  slot close.
+                </span>
               </p>
             </div>
           </form>
