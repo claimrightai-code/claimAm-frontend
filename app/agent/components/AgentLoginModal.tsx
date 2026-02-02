@@ -50,7 +50,7 @@ export function AgentLoginForm({
       } else if (res.redirectUrl === `/agent-payment`) {
          router.push(res.redirectUrl);
       } else {
-        console.log("clicked");
+        // console.log("clicked");
         onLoginSuccess(res);
       }
     } catch (error) {

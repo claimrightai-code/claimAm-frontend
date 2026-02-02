@@ -88,14 +88,14 @@ export function AgentRegistrationForm({
             alert("Payment verification failed: " + (verifyRes.message || "Unknown error"));
           }
         } catch (error) {
-          console.error("Verification Error:", error);
+          // console.error("Verification Error:", error);
           alert("An error occurred during verification.");
         } finally {
           setLoading(false);
         }
       },
       onClose: () => {
-        alert("Payment cancelled.");
+        // alert("Payment cancelled.");
         setLoading(false);
       },
     });
@@ -143,7 +143,7 @@ export function AgentRegistrationForm({
         }
       // }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       setLoading(false);
     }
     

@@ -35,13 +35,13 @@ export default function CompletePaymentPage() {
       },
       onClose: () => {
         setLoading(false);
-        // alert("Payment cancelled.");
+        alert("Payment cancelled.");
       },
     });
   };
 
   if (!user){ 
-    // window.location.href = "/agent";
+   
     router.push("/agent");
     return null;
 };
