@@ -20,6 +20,45 @@ const BUSINESS_TYPES = [
 ];
 
 const TRAFFIC_RANGES = ["< 50", "50 - 100", "100 - 500", "500+"];
+const NIGERIAN_STATES = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
+  "Federal Capital Territory (Abuja)",
+];
 
 export function AgentRegistrationForm({
   onPaymentComplete,
@@ -246,24 +285,20 @@ export function AgentRegistrationForm({
 
             {/* 3. Location */}
             <div className="grid md:grid-cols-2 gap-5">
-              <div className="space-y-1.5">
-                <label className="block text-slate-700 text-sm font-medium">
-                  State
-                </label>
-                <select
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm appearance-none focus:border-blue-500 focus:outline-none"
-                  onChange={(e) =>
-                    setFormData({ ...formData, state: e.target.value })
-                  }
-                >
-                  <option value="">Select State</option>
-                  <option value="Lagos">Lagos</option>
-                  <option value="Abuja">Abuja</option>
-                  <option value="Kano">Kano</option>
-                  <option value="Rivers">Rivers</option>
-                </select>
-              </div>
+              <select
+                value={formData.state}
+                onChange={(e) => updateFormData("state", e.target.value)}
+                required
+                className="w-full mt-1 rounded-md border border-gray-300 px-3 py-2"
+              >
+                <option value="">Select your state</option>
+
+                {NIGERIAN_STATES.map((state) => (
+                  <option key={state} value={state}>
+                    {state}
+                  </option>
+                ))}
+              </select>
               <div className="space-y-1.5">
                 <label className="block text-slate-700 text-sm font-medium">
                   LGA
