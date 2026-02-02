@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { usePaystackPayment } from "react-paystack";
+import { useState, useEffect } from "react";
 import { useUserContext } from "@/hooks/hooks";
 import { Lock, CreditCard, Loader2, ArrowRight, ShieldCheck, Wallet } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,7 @@ import { useRouter } from "next/navigation";
 export default function CompletePaymentPage() {
   const { user , verifyPaymentFunc} = useUserContext();
   const [loading, setLoading] = useState(false);
+  const [initializePaystack, setInitializePaystack] = useState<any | null>(null);
   const router = useRouter();
   // Paystack Config
   const config = {
@@ -19,8 +19,18 @@ export default function CompletePaymentPage() {
     publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
   };
 
-  const initializePaystack = usePaystackPayment(config);
-
+  useEffect(() => {
+    let mounted = true;
+    // Import react-paystack only on the client to avoid server eval of `window`
+    import("react-paystack").then((mod) => {
+      if (mounted && mod?.usePaystackPayment) {
+        setInitializePaystack(() => mod.usePaystackPayment(config));
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, [config]);
   const handlePayClick = () => {
     setLoading(true);
     initializePaystack({
