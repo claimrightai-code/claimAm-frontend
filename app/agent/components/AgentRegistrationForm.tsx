@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Lock, Briefcase, Loader2, Store, Users } from "lucide-react";
 import { useUserContext } from "@/hooks/hooks";
+import { usePaystackPayment } from "react-paystack"; 
 
 interface AgentRegistrationFormProps {
   onPaymentComplete: (agentData: any) => void;
@@ -85,71 +86,49 @@ export function AgentRegistrationForm({
     publicKey: "", 
   });
 
-  // 2. Define a Flag to Trigger Payment
-  const [readyToPay, setReadyToPay] = useState(false);
-  const [registeredAgentId, setRegisteredAgentId] = useState<number | null>(
-    null,
-  );
+  const [registeredAgentId, setRegisteredAgentId] = useState<number | null>(null);
   const [referalCode, setreferalCode] = useState<string | null>(null);
-  // 3. Initialize Hook with the dynamic config (loaded only on client)
-  const [initializePaystack, setInitializePaystack] = useState<any | null>(null);
-
-  useEffect(() => {
-    let mounted = true;
-    import("react-paystack")
-      .then((mod) => {
-        if (!mounted) return;
-        if (mod?.usePaystackPayment) {
-          setInitializePaystack(() => mod.usePaystackPayment(paystackConfig));
-        }
-      })
-      .catch(() => {});
-    return () => {
-      mounted = false;
-    };
-  }, [paystackConfig]);
+  const [showPaymentButton, setShowPaymentButton] = useState(false);
+  // 3. Initialize Paystack hook (static import) and get initialize function
+  const initializePaystack = usePaystackPayment(paystackConfig);
 
 
-  useEffect(() => {
-  if (
-    readyToPay &&
-    paystackConfig.email &&
-    paystackConfig.publicKey &&
-    initializePaystack
-  ) {
-    setReadyToPay(false);
 
-    initializePaystack({
-      onSuccess: async (txn: any) => {
-        setLoading(true);
-        try {
-          // verifyPaymentFunc(reference, user_id)
-          const verifyRes = await verifyPaymentFunc(txn.reference, registeredAgentId);
-
-          if (verifyRes.ok) {
-            onPaymentComplete({
-              ...formData,
-              id: registeredAgentId,
-              referral_code: referalCode,
-            });
-          } else {
-            alert("Payment verification failed: " + (verifyRes.message || "Unknown error"));
-          }
-        } catch (error) {
-          // console.error("Verification Error:", error);
-          alert("An error occurred during verification.");
-        } finally {
-          setLoading(false);
-        }
-      },
-      onClose: () => {
-        // alert("Payment cancelled.");
-        setLoading(false);
-      },
-    });
+  const handlePayClick = () => {
+  if (!paystackConfig.publicKey) {
+    alert("Payment is not configured (missing Paystack public key). Please contact support.");
+    return;
   }
 
-}, [readyToPay, paystackConfig, initializePaystack]);
+  // Debug: ensure the config is present
+  // console.log("Initiating Paystack with config:", paystackConfig);
+  setLoading(true);
+
+  initializePaystack({
+    onSuccess: async (txn: any) => {
+      try {
+        const verifyRes = await verifyPaymentFunc(txn.reference, registeredAgentId);
+
+        if (verifyRes.ok) {
+          onPaymentComplete({
+            ...formData,
+            id: registeredAgentId,
+            referral_code: referalCode,
+          });
+        } else {
+          alert("Payment verification failed: " + (verifyRes.message || "Unknown error"));
+        }
+      } catch (error) {
+        alert("An error occurred during verification.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    onClose: () => {
+      setLoading(false);
+    },
+  });
+};
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,11 +160,13 @@ export function AgentRegistrationForm({
           setPaystackConfig({
             reference: new Date().getTime().toString(),
             email: formData.email,
-            amount: 1500 * 100, 
-            publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "", 
+            amount: 1500 * 100,
+            publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
           });
           
-          setReadyToPay(true); 
+          // Show explicit payment button so user gesture opens Paystack (avoids popup blocks & race conditions)
+          setShowPaymentButton(true);
+          setLoading(false);
         } else {
           setLoading(false);
         }
@@ -446,14 +427,29 @@ export function AgentRegistrationForm({
                   </>
                 )}
               </button>
-              <p className="text-center text-slate-500 text-xs mt-4 leading-relaxed">
+
+              {showPaymentButton && (
+                <div className="pt-4">
+                  <button
+                    onClick={handlePayClick}
+                    disabled={loading}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-500/20 transition-all flex items-center justify-center gap-2 mt-3"
+                  >
+                    {loading ? (
+                      <Loader2 className="animate-spin" />
+                    ) : (
+                      <>
+                        <Lock size={18} /> Pay & Activate – ₦1,500
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
+
+              <p className="text-center text-slate-400 text-xs mt-4 leading-relaxed">
                 By registering you agree to become a ClaimAm agent.
                 <br />
-                <span className="text-green-50">
-                  {" "}
-                  Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding
-                  slot close.
-                </span>
+               <span className="text-green-50"> Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding slot close.</span>
               </p>
             </div>
           </form>
