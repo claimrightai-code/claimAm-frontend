@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePaystackPayment } from "react-paystack";
 import { Lock, Briefcase, Loader2, Store, Users } from "lucide-react";
 import { useUserContext } from "@/hooks/hooks";
-import { usePaystackPayment } from "react-paystack"; 
 
 interface AgentRegistrationFormProps {
   onPaymentComplete: (agentData: any) => void;
@@ -55,8 +55,8 @@ const NIGERIAN_STATES = [
   "Zamfara",
   "Federal Capital Territory (Abuja)",
 ];
-const TRAFFIC_RANGES = ["< 200", "200 - 500", "500 - 1000", "1000+"];
 
+const TRAFFIC_RANGES = ["< 200", "200 - 500", "500 - 1000", "1000+"];
 export function AgentRegistrationForm({
   onPaymentComplete,
 }: AgentRegistrationFormProps) {
@@ -71,64 +71,70 @@ export function AgentRegistrationForm({
     state: "",
     lga: "",
     shopLocation: "",
-    currentBusiness: "pos_point", 
-    footTraffic: "200 - 500", 
+    currentBusiness: "pos_point",
+    footTraffic: "50 - 100",
     referralCode: "",
   });
 
-  const {  registerAgentFunc, verifyPaymentFunc } = useUserContext();
+  const { registerAgentFunc, verifyPaymentFunc } = useUserContext();
 
   // Paystack State
-   const [paystackConfig, setPaystackConfig] = useState({
+  const [paystackConfig, setPaystackConfig] = useState({
     reference: "",
     email: "",
     amount: 0,
-    publicKey: "", 
+    publicKey: "",
   });
 
-  const [registeredAgentId, setRegisteredAgentId] = useState<number | null>(null);
+  // 2. Define a Flag to Trigger Payment
+  const [readyToPay, setReadyToPay] = useState(false);
+  const [registeredAgentId, setRegisteredAgentId] = useState<number | null>(
+    null,
+  );
   const [referalCode, setreferalCode] = useState<string | null>(null);
-  const [showPaymentButton, setShowPaymentButton] = useState(false);
-  // 3. Initialize Paystack hook (static import) and get initialize function
+  // 3. Initialize Hook with the dynamic config
   const initializePaystack = usePaystackPayment(paystackConfig);
 
+  useEffect(() => {
+    if (readyToPay && paystackConfig.email && paystackConfig.publicKey) {
+      setReadyToPay(false);
 
+      initializePaystack({
+        onSuccess: async (txn: any) => {
+          setLoading(true);
+          try {
+            // verifyPaymentFunc(reference, user_id)
+            const verifyRes = await verifyPaymentFunc(
+              txn.reference,
+              registeredAgentId,
+            );
 
-  const handlePayClick = () => {
-  if (!paystackConfig.publicKey) {
-    alert("Payment is not configured (missing Paystack public key). Please contact support.");
-    return;
-  }
-
-  // Debug: ensure the config is present
-  // console.log("Initiating Paystack with config:", paystackConfig);
-  setLoading(true);
-
-  initializePaystack({
-    onSuccess: async (txn: any) => {
-      try {
-        const verifyRes = await verifyPaymentFunc(txn.reference, registeredAgentId);
-
-        if (verifyRes.ok) {
-          onPaymentComplete({
-            ...formData,
-            id: registeredAgentId,
-            referral_code: referalCode,
-          });
-        } else {
-          alert("Payment verification failed: " + (verifyRes.message || "Unknown error"));
-        }
-      } catch (error) {
-        alert("An error occurred during verification.");
-      } finally {
-        setLoading(false);
-      }
-    },
-    onClose: () => {
-      setLoading(false);
-    },
-  });
-};
+            if (verifyRes.ok) {
+              onPaymentComplete({
+                ...formData,
+                id: registeredAgentId,
+                referral_code: referalCode,
+              });
+            } else {
+              alert(
+                "Payment verification failed: " +
+                  (verifyRes.message || "Unknown error"),
+              );
+            }
+          } catch (error) {
+            console.error("Verification Error:", error);
+            alert("An error occurred during verification.");
+          } finally {
+            setLoading(false);
+          }
+        },
+        onClose: () => {
+          alert("Payment cancelled.");
+          setLoading(false);
+        },
+      });
+    }
+  }, [readyToPay, paystackConfig]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -146,36 +152,32 @@ export function AgentRegistrationForm({
         shopAddress: formData.shopLocation,
         currentBusiness: formData.currentBusiness,
         dailyTrafficEstimate: formData.footTraffic,
-        referralCode: formData.referralCode
+        referralCode: formData.referralCode,
       });
       //  console.log(regRes)
       if (regRes.ok) {
         const { id: agentId, referral_code: referralCode } = regRes;
-     
-          if (agentId) {
-            setRegisteredAgentId(agentId);
-            setreferalCode(referralCode)
 
-          }
-          setPaystackConfig({
-            reference: new Date().getTime().toString(),
-            email: formData.email,
-            amount: 1500 * 100,
-            publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
-          });
-          
-          // Show explicit payment button so user gesture opens Paystack (avoids popup blocks & race conditions)
-          setShowPaymentButton(true);
-          setLoading(false);
-        } else {
-          setLoading(false);
+        if (agentId) {
+          setRegisteredAgentId(agentId);
+          setreferalCode(referralCode);
         }
+        setPaystackConfig({
+          reference: new Date().getTime().toString(),
+          email: formData.email,
+          amount: 1500 * 100,
+          publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
+        });
+
+        setReadyToPay(true);
+      } else {
+        setLoading(false);
+      }
       // }
     } catch (error) {
-      // console.error(error);
+      console.error(error);
       setLoading(false);
     }
-    
   };
   return (
     <section
@@ -193,7 +195,7 @@ export function AgentRegistrationForm({
               Agent Application
             </h2>
             <div className="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
-              First 5,000 Agents Only
+              First 3,000 Agents Only
             </div>
           </div>
 
@@ -295,6 +297,20 @@ export function AgentRegistrationForm({
                   }
                 />
               </div>
+              <div className="space-y-1.5">
+                <label className="block text-slate-700 text-sm font-medium">
+                  LGA
+                </label>
+                <input
+                  type="text"
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  placeholder="City / LGA"
+                  onChange={(e) =>
+                    setFormData({ ...formData, lga: e.target.value })
+                  }
+                />
+              </div>
             </div>
 
             <div className="space-y-1.5">
@@ -359,7 +375,7 @@ export function AgentRegistrationForm({
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-blue-600" />
                   <label className="block text-slate-700 text-sm font-medium">
-                    How many people / motor pass your spot daily?
+                    Daily Foot Traffic
                   </label>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -427,29 +443,10 @@ export function AgentRegistrationForm({
                   </>
                 )}
               </button>
-
-              {showPaymentButton && (
-                <div className="pt-4">
-                  <button
-                    onClick={handlePayClick}
-                    disabled={loading}
-                    className="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-green-500/20 transition-all flex items-center justify-center gap-2 mt-3"
-                  >
-                    {loading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <>
-                        <Lock size={18} /> Pay & Activate – ₦1,500
-                      </>
-                    )}
-                  </button>
-                </div>
-              )}
-
               <p className="text-center text-slate-400 text-xs mt-4 leading-relaxed">
-                By registering you agree to become a ClaimAm agent.
+                Registration is secured by Paystack.
                 <br />
-               <span className="text-green-50"> Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding slot close.</span>
+                By registering, you agree to our terms of service.
               </p>
             </div>
           </form>
