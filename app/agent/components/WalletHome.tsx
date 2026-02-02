@@ -22,9 +22,9 @@ export function WalletHome({ onNavigate }: WalletHomeProps) {
   const { data: stats, isLoading } = useAgentStats();
 
   // 3. Safe Fallback
-  // console.log(stats)
+  console.log(stats)
   const balance = stats?.wallet_balance || 0;
-
+  
   return (
     <div className="px-4 py-6 bg-slate-50">
       <div className="max-w-2xl mx-auto">

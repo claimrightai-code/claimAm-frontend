@@ -20,14 +20,14 @@ export function TrustSection() {
               </p>
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-bold text-slate-900">
-                  1,060+
+                  100+
                 </span>
                 <span className="text-xs font-medium bg-green-100 text-green-700 px-2 py-0.5 rounded-full">
                   Joined
                 </span>
               </div>
               <p className="text-sm text-slate-500 mt-0.5">
-                Founding members registered
+                Founding Agents registered
               </p>
             </div>
           </div>

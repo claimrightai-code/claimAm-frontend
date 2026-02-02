@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { PhotoSlider } from "react-photo-view";
 import 'react-photo-view/dist/react-photo-view.css';

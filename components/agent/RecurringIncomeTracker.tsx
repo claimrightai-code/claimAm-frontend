@@ -72,7 +72,7 @@ export function RecurringIncomeTracker({ language }: RecurringIncomeTrackerProps
   const handleSendReminder = (userId: number, phone: string, name: string) => {
     const message = `Hi ${name.split(' ')[0]}, your ClaimAm subscription dey expire soon. Renew now to keep your coverage active and unlock instant loan access! Dial *669# or visit claimam.ng 🚀`;
     const whatsappUrl = `https://wa.me/234${phone.replace(/\D/g, '')}?text=${encodeURIComponent(message)}`;
-    window.open(whatsappUrl, '_blank');
+    // window.open(whatsappUrl, '_blank');
   };
 
   return (

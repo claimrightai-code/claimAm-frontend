@@ -45,7 +45,7 @@ export function Hero({ onFoundingMemberClick, onAgentClick }: HeroProps) {
           {/* Slogan Badge - Replaced gradient with clean modern pill */}
           <div className="inline-flex items-center gap-2 bg-[#00C853]/10 text-[#00C853] px-5 py-2 rounded-full text-lg font-semibold mb-8 border border-[#00C853]/20">
             <Check size={18} strokeWidth={3} />
-            <span>You claim am, we pay am!</span>
+            <span>claim your Right!</span>
           </div>
 
           {/* Description */}

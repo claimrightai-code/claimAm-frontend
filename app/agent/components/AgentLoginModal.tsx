@@ -43,7 +43,7 @@ export function AgentLoginForm({
     try {
       // Call the existing login logic
       const res = await loginFunc({ email, password });
-     
+      console.log(res);
       if (res.redirectUrl === `/verify-email?email=${res.email}`) {
         // console.log(res.redirectUrl)
         router.push(res.redirectUrl);

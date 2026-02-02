@@ -52,7 +52,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.562.0",
     "motion": "^12.28.1",
-    "next": "15.0.7",
+    "next": "15.0.4",
     "next-theme": "^0.1.5",
     "paga-business": "^2.0.4",
     "qrcode.react": "^4.2.0",

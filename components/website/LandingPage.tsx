@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from "next/navigation";
 import heroimage from "@/assets/images/assets/heroimage.png";
 import motorist from "@/assets/images/assets/motorist.png";
+import woman from "@/assets/images/assets/womanwithphone.jpg"
 import { 
   Menu,
   X,
@@ -1132,12 +1133,11 @@ const router = useRouter();
               transition={{ delay: 0.2 }}
               className="flex items-center justify-center"
             >
-              {/* <ImageWithFallback
-                src={howItWorksImage}
+              <Image
+                src={woman}
                 alt="Nigerian woman farmer using mobile phone for ClaimAm"
                 className="w-3/4 h-auto rounded-2xl shadow-2xl object-cover"
-              /> */}{" "}
-              How it works image placeholder
+              /> 
             </motion.div>
           </div>
         </div>
@@ -1604,11 +1604,7 @@ const router = useRouter();
                 Request a personalized demo and discover how ClaimAm can
                 transform your insurance claims process. Works via app or *669#.
               </p>
-              {/* <ImageWithFallback
-                src={demoImage}
-                alt="Nigerian Highway - Drive Safely with ClaimAm Insurance"
-                className="w-3/4 h-auto rounded-2xl shadow-xl mx-auto"
-              /> */}
+             
               <Image
                 src={motorist}
                 alt="Nigerian Highway - Drive Safely with ClaimAm Insurance"

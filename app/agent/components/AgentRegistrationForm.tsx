@@ -10,16 +10,11 @@ interface AgentRegistrationFormProps {
 
 // Backend Enum Mappings
 const BUSINESS_TYPES = [
-  { label: "POS / Banking", value: "pos_point" },
-  { label: "Car Wash", value: "car_wash" },
-  { label: "Mechanic Shop", value: "mechanic_workshop" },
-  { label: "Vulcanizer", value: "vulcanizer" },
-  { label: "Fuel Station", value: "fuel_station" },
-  { label: "Supermarket", value: "supermarket" },
+  { label: "POS Stand", value: "pos_point" },
+  { label: "Bet Shop", value: "phone_shop" },
+  { label: "Phone Shop", value: "mechanic_workshop" },
   { label: "Other", value: "other" },
 ];
-
-const TRAFFIC_RANGES = ["< 50", "50 - 100", "100 - 500", "500+"];
 const NIGERIAN_STATES = [
   "Abia",
   "Adamawa",
@@ -59,6 +54,7 @@ const NIGERIAN_STATES = [
   "Zamfara",
   "Federal Capital Territory (Abuja)",
 ];
+const TRAFFIC_RANGES = ["< 200", "200 - 500", "500 - 1000", "1000+"];
 
 export function AgentRegistrationForm({
   onPaymentComplete,
@@ -75,7 +71,7 @@ export function AgentRegistrationForm({
     lga: "",
     shopLocation: "",
     currentBusiness: "pos_point", 
-    footTraffic: "50 - 100", 
+    footTraffic: "200 - 500", 
     referralCode: "",
   });
 
@@ -216,7 +212,7 @@ export function AgentRegistrationForm({
               Agent Application
             </h2>
             <div className="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
-              First 3,000 Agents Only
+              First 5,000 Agents Only
             </div>
           </div>
 
@@ -285,20 +281,25 @@ export function AgentRegistrationForm({
 
             {/* 3. Location */}
             <div className="grid md:grid-cols-2 gap-5">
-              <select
-                value={formData.state}
-                onChange={(e) => updateFormData("state", e.target.value)}
-                required
-                className="w-full mt-1 rounded-md border border-gray-300 px-3 py-2"
-              >
-                <option value="">Select your state</option>
-
-                {NIGERIAN_STATES.map((state) => (
-                  <option key={state} value={state}>
-                    {state}
-                  </option>
-                ))}
-              </select>
+              <div className="space-y-1.5">
+                <label className="block text-slate-700 text-sm font-medium">
+                  State
+                </label>
+                <select
+                  required
+                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm appearance-none focus:border-blue-500 focus:outline-none"
+                  onChange={(e) =>
+                    setFormData({ ...formData, state: e.target.value })
+                  }
+                >
+                  <option value="">Select State</option>
+                  {NIGERIAN_STATES.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <div className="space-y-1.5">
                 <label className="block text-slate-700 text-sm font-medium">
                   LGA
@@ -377,7 +378,7 @@ export function AgentRegistrationForm({
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-blue-600" />
                   <label className="block text-slate-700 text-sm font-medium">
-                    Daily Foot Traffic
+                    How many people / motor pass your spot daily?
                   </label>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -446,9 +447,9 @@ export function AgentRegistrationForm({
                 )}
               </button>
               <p className="text-center text-slate-400 text-xs mt-4 leading-relaxed">
-                Registration is secured by Paystack.
+                By registering you agree to become a ClaimAm agent.
                 <br />
-                By registering, you agree to our terms of service.
+               <span className="text-green-50"> Non-Founding Agent One-Time Entry Fee is ₦20,000 when founding slot close.</span>
               </p>
             </div>
           </form>
