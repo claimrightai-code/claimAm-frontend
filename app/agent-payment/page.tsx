@@ -4,12 +4,13 @@ import { useState } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { useUserContext } from "@/hooks/hooks";
 import { Lock, CreditCard, Loader2, ArrowRight, ShieldCheck, Wallet } from "lucide-react";
+import { useRouter } from "next/navigation";
 // import { verifyPaymentFunc } from "@/lib/api";
 
 export default function CompletePaymentPage() {
   const { user , verifyPaymentFunc} = useUserContext();
   const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
   // Paystack Config
   const config = {
     reference: new Date().getTime().toString(),
@@ -28,7 +29,8 @@ export default function CompletePaymentPage() {
         const res = await verifyPaymentFunc(tx.reference, user?.id);
         if (res.ok) {
           // 2. Redirect to dashboard
-          window.location.href = "/agent"; // This will trigger the logic in App.tsx
+         // This will trigger the logic in App.tsx
+          router.push("/agent");
         }
       },
       onClose: () => {
