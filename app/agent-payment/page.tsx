@@ -35,7 +35,7 @@ export default function CompletePaymentPage() {
       },
       onClose: () => {
         setLoading(false);
-        alert("Payment cancelled.");
+        // alert("Payment cancelled.");
       },
     });
   };
