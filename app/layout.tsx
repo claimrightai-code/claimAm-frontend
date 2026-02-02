@@ -10,7 +10,7 @@ import { Toaster } from "@/../../components/ui/toaster"; // Adjusted path to sha
 import { AuthProvider } from "../context/AuthState";
 import { UserProvider } from "../context/UserContext";
 import QueryProvider from "../context/UseQueryProvider"
-import { TabProvider } from "../context/TabContext";
+// import { TabProvider } from "../context/TabContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,14 +38,14 @@ export default function RootLayout({
 
       <body className={inter.className}>
         <UserProvider>
-          <TabProvider>
+          {/* <TabProvider> */}
             <AuthProvider>
               <QueryProvider>
               <main className="">{children}</main>
               </QueryProvider>
             </AuthProvider>
             <Toaster />
-          </TabProvider>
+          {/* </TabProvider> */}
         </UserProvider>
 
       
