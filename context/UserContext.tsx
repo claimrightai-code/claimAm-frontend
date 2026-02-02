@@ -4,7 +4,7 @@ import {getCookie, setCookie, deleteCookie } from "cookies-next";
 import api from "../api";
 import { useToast } from "../components/ui/use-toast";
 // import { useRouter } from "next/navigation";
-import { useTabContext } from "@/hooks/hooks";
+// import { useTabContext } from "@/hooks/hooks";
 import { usePresenceData } from "motion/react";
 
 type Stats = {
@@ -190,7 +190,7 @@ export const UserProvider = ({ children }: Props) => {
   const [electricityMerchants, setElectricityMerchants] = useState<
     Merchants[] | null
   >(null);
-  const { setTabState } = useTabContext();
+  // const { setTabState } = useTabContext();
   const { toast } = useToast();
   const cookies = getCookie("token");
   // const router = useRouter();
