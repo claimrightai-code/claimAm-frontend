@@ -1,0 +1,202 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import "~bootstrap/scss/bootstrap";
+@import "node_modules/react-modal-video/scss/modal-video.scss";
+@import "~slick-carousel/slick/slick.css";
+@import "react-toastify/dist/ReactToastify.css";
+@import "../public/assets/fonts/satoshi/css/satoshi.css";
+@import "../public/assets/fonts/clash-display/css/clash-display.css";
+// @import "../../public/assets/fonts/magnita/magnita.css";
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap");
+@import "../public/assets/fonts/bootstrap-icons/font.css";
+@import "../public/assets/fonts/bootstrap-icons/font.css";
+@import "../public/assets/scss/style.scss";
+@import "../public/assets/scss/style.scss";
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+.service-card {
+  @apply h-full w-full rounded-2xl lg:rounded-[40px] p-4 text-center flex flex-col items-center justify-center bg-white hover:bg-purple-50;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #111111;
+  border-radius: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #e0e0e0;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #111111 #e0e0e0;
+  direction: rtl;
+}
+
+.swiper-button-next {
+  background-image: url("/arrow-right.svg");
+  background-repeat: no-repeat;
+  position: absolute;
+  background-size: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  background-position: center;
+  background-color: #64d450;
+  padding: 20px;
+  bottom: 20px !important;
+  right: 0;
+  z-index: 100;
+}
+
+.swiper-button-next::after {
+  display: none;
+}
+.swiper-button-prev {
+  background-image: url("/arrow-left.svg");
+  background-repeat: no-repeat;
+  position: absolute;
+  background-size: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 100px;
+  background-position: center;
+  background-color: #0f0f0f;
+  padding: 20px;
+  bottom: 20px !important;
+  right: 70px;
+  z-index: 100;
+}
+
+.swiper-button-prev::after {
+  display: none;
+}
+
+@media (max-width: 776px) {
+  .swiper-button-prev {
+    margin-left: 0px;
+  }
+  .swiper-button-next {
+    margin-right: 0px;
+  }
+}
+
+.wallet-ballance {
+  @apply text-xs mb-4 text-gray-500;
+}
+.wallet-amount {
+  @apply text-xl md:text-2xl font-bold;
+}
+.bounce {
+  @apply active:scale-90 transition-all;
+}
+
+/* .swiper-button-next {
+  background-image: url("/arrow-right.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center;
+  margin-right: 50px;
+}
+
+.swiper-button-next::after {
+  display: none;
+}
+.swiper-button-prev {
+  background-image: url("/arrow-left.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center;
+  margin-left: 50px;
+}
+
+.swiper-button-prev::after {
+  display: none;
+}
+
+@media (max-width: 776px) {
+  .swiper-button-prev {
+    margin-left: 0px;
+  }
+  .swiper-button-next {
+    margin-right: 0px;
+  }
+} */
