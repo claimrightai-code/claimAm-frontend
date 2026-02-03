@@ -297,20 +297,6 @@ export function AgentRegistrationForm({
                   }
                 />
               </div>
-              <div className="space-y-1.5">
-                <label className="block text-slate-700 text-sm font-medium">
-                  LGA
-                </label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
-                  placeholder="City / LGA"
-                  onChange={(e) =>
-                    setFormData({ ...formData, lga: e.target.value })
-                  }
-                />
-              </div>
             </div>
 
             <div className="space-y-1.5">
