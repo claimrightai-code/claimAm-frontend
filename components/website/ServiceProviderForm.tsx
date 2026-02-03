@@ -519,6 +519,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         {/* Form */}
         <form
+          id="sp-form"
           onSubmit={handleSubmit}
           className="bg-white rounded-xl shadow-lg p-6 lg:p-8 space-y-8"
         >
@@ -1371,8 +1372,6 @@ const handleSubmit = async (e: React.FormEvent) => {
                 />
               </div>
 
-            
-
               <div className="bg-gray-50 rounded-xl p-6 border-2 border-gray-200">
                 <div className="flex items-start space-x-3">
                   <Checkbox
@@ -1399,6 +1398,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
               <Button
                 type="submit"
+                onTouchStart={() => {}}
                 className="w-full h-14 text-lg bg-green-600 hover:bg-green-700 text-white"
                 disabled={!formData.agreed}
               >
