@@ -109,7 +109,7 @@ export function AgentRegistrationForm({
     } else if (!isPhone(formData.whatsapp)) {
       errors.whatsapp = "Please enter a valid phone number";
     }
- 
+
     // State, LGA, Shop Address
     if (!formData.state) errors.state = "Please select your state";
     if (!formData.lga.trim()) errors.lga = "Please enter your LGA";
@@ -128,6 +128,9 @@ export function AgentRegistrationForm({
   }, [formData]);
 
   const { registerAgentFunc, verifyPaymentFunc } = useUserContext();
+
+  // ARIA-friendly boolean for disabled state used in markup (React will stringify it)
+  const _ariaDisabled = loading || !isValid;
 
   // Paystack State
   const [paystackConfig, setPaystackConfig] = useState({
@@ -232,8 +235,6 @@ export function AgentRegistrationForm({
           publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
         });
 
-  const _ariaDisabled = (loading || !isValid) ? "true" : "false";
-
         setReadyToPay(true);
       } else {
         setLoading(false);
@@ -275,14 +276,16 @@ export function AgentRegistrationForm({
                   type="email"
                   name="email"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.email ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.email ? "border-red-500" : "border-slate-200"}`}
                   placeholder="your@email.com"
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                 />
                 {formErrors.email && (
-                  <p className="text-sm text-red-600 mt-1">{formErrors.email}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.email}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
@@ -293,14 +296,16 @@ export function AgentRegistrationForm({
                   type="password"
                   name="password"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.password ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.password ? "border-red-500" : "border-slate-200"}`}
                   placeholder="Create a password"
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                 />
                 {formErrors.password && (
-                  <p className="text-sm text-red-600 mt-1">{formErrors.password}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.password}
+                  </p>
                 )}
               </div>
             </div>
@@ -315,13 +320,15 @@ export function AgentRegistrationForm({
                   type="text"
                   name="fullName"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.fullName ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.fullName ? "border-red-500" : "border-slate-200"}`}
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                 />
                 {formErrors.fullName && (
-                  <p className="text-sm text-red-600 mt-1">{formErrors.fullName}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.fullName}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
@@ -332,13 +339,15 @@ export function AgentRegistrationForm({
                   type="tel"
                   name="whatsapp"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.whatsapp ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.whatsapp ? "border-red-500" : "border-slate-200"}`}
                   onChange={(e) =>
                     setFormData({ ...formData, whatsapp: e.target.value })
                   }
                 />
                 {formErrors.whatsapp && (
-                  <p className="text-sm text-red-600 mt-1">{formErrors.whatsapp}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.whatsapp}
+                  </p>
                 )}
               </div>
             </div>
@@ -352,7 +361,7 @@ export function AgentRegistrationForm({
                 <select
                   name="state"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm appearance-none focus:border-blue-500 focus:outline-none ${formErrors.state ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm appearance-none focus:border-blue-500 focus:outline-none ${formErrors.state ? "border-red-500" : "border-slate-200"}`}
                   onChange={(e) =>
                     setFormData({ ...formData, state: e.target.value })
                   }
@@ -365,7 +374,9 @@ export function AgentRegistrationForm({
                   ))}
                 </select>
                 {formErrors.state && (
-                  <p className="text-sm text-red-600 mt-1">{formErrors.state}</p>
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.state}
+                  </p>
                 )}
               </div>
               <div className="space-y-1.5">
@@ -376,7 +387,7 @@ export function AgentRegistrationForm({
                   type="text"
                   name="lga"
                   required
-                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.lga ? 'border-red-500' : 'border-slate-200'}`}
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.lga ? "border-red-500" : "border-slate-200"}`}
                   placeholder="City / LGA"
                   onChange={(e) =>
                     setFormData({ ...formData, lga: e.target.value })
@@ -396,14 +407,16 @@ export function AgentRegistrationForm({
                 type="text"
                 name="shopLocation"
                 required
-                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.shopLocation ? 'border-red-500' : 'border-slate-200'}`}
+                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.shopLocation ? "border-red-500" : "border-slate-200"}`}
                 placeholder="e.g. 12 Bode Thomas, Surulere"
                 onChange={(e) =>
                   setFormData({ ...formData, shopLocation: e.target.value })
                 }
               />
               {formErrors.shopLocation && (
-                <p className="text-sm text-red-600 mt-1">{formErrors.shopLocation}</p>
+                <p className="text-sm text-red-600 mt-1">
+                  {formErrors.shopLocation}
+                </p>
               )}
             </div>
 
@@ -510,7 +523,6 @@ export function AgentRegistrationForm({
               <button
                 type="submit"
                 disabled={loading || !isValid}
-                aria-disabled={_ariaDisabled}
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
