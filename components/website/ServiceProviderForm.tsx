@@ -24,7 +24,7 @@ import {
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+
 import api from "@/api";
 
 // Nigerian states
@@ -164,7 +164,7 @@ export function ServiceProviderForm() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const router = useRouter();
+
   const [formData, setFormData] = useState<FormData>({
     businessName: "",
     serviceType: { repairs: false, towing: false },
@@ -370,8 +370,11 @@ export function ServiceProviderForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSaving) return;
+
     if (!validateForm()) return;
 
+    setIsSaving(true);
     const toastId = toast.loading("Submitting your application...");
 
     try {
@@ -413,6 +416,8 @@ export function ServiceProviderForm() {
 
       toast.error(errorMessage, { id: toastId });
       console.error("Submission error:", error);
+    } finally {
+      setIsSaving(false);
     }
   };
   if (submitted) {
@@ -442,7 +447,7 @@ export function ServiceProviderForm() {
             </p>
           </div>
           <Button
-            onClick={() => router.push("/")}
+            onClick={() => (window.location.href = "/")}
             className="bg-[#00A878] hover:bg-[#00C853] text-white px-8 py-3"
           >
             Back to Home
@@ -1400,9 +1405,10 @@ export function ServiceProviderForm() {
                 type="submit"
                 onTouchStart={() => {}}
                 className="w-full h-14 text-lg bg-green-600 hover:bg-green-700 text-white"
-                disabled={!formData.agreed}
+                disabled={!formData.agreed || isSaving}
+                aria-busy={isSaving}
               >
-                Send Application
+                {isSaving ? "Sending..." : "Send Application"}
               </Button>
 
               {!formData.agreed && (
