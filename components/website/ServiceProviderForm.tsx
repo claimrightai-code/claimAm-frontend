@@ -24,6 +24,7 @@ import {
   Clock,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import api from "@/api";
 
 // Nigerian states
@@ -156,7 +157,6 @@ interface FormData {
   // Section 7: Agreement
   agreed: boolean;
   notes: string;
-  
 }
 
 export function ServiceProviderForm() {
@@ -164,7 +164,7 @@ export function ServiceProviderForm() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     businessName: "",
     serviceType: { repairs: false, towing: false },
@@ -347,74 +347,74 @@ export function ServiceProviderForm() {
     return true;
   };
 
-//   const handleSubmit = (e: React.FormEvent) => {
-//     e.preventDefault();
+  //   const handleSubmit = (e: React.FormEvent) => {
+  //     e.preventDefault();
 
-//     if (!validateForm()) {
-//       return;
-//     }
+  //     if (!validateForm()) {
+  //       return;
+  //     }
 
-//     // Simulate form submission
-//     toast.success("Submitting your application...", { duration: 2000 });
+  //     // Simulate form submission
+  //     toast.success("Submitting your application...", { duration: 2000 });
 
-//     setTimeout(() => {
-//       setSubmitted(true);
-//       // Clear saved data
-//       localStorage.removeItem("claimam_service_provider_form");
-//       localStorage.removeItem("claimam_service_provider_form_time");
+  //     setTimeout(() => {
+  //       setSubmitted(true);
+  //       // Clear saved data
+  //       localStorage.removeItem("claimam_service_provider_form");
+  //       localStorage.removeItem("claimam_service_provider_form_time");
 
-//       // Scroll to top
-//       window.scrollTo({ top: 0, behavior: "smooth" });
-//     }, 2000);
-//   };
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+  //       // Scroll to top
+  //       window.scrollTo({ top: 0, behavior: "smooth" });
+  //     }, 2000);
+  //   };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-  if (!validateForm()) return;
+    if (!validateForm()) return;
 
-  const toastId = toast.loading("Submitting your application...");
+    const toastId = toast.loading("Submitting your application...");
 
-  try {
-    const dataToSend = new FormData();
+    try {
+      const dataToSend = new FormData();
 
-    // 1. Prepare the JSON data (text fields)
-    const { photos, ...jsonFields } = formData;
-    // We send the JSON as a string in a field called 'data'
-    dataToSend.append("data", JSON.stringify(jsonFields));
+      // 1. Prepare the JSON data (text fields)
+      const { photos, ...jsonFields } = formData;
+      // We send the JSON as a string in a field called 'data'
+      dataToSend.append("data", JSON.stringify(jsonFields));
 
-    // 2. Append Photos (binary files)
-    formData.photos.forEach((file) => {
-      dataToSend.append("photos", file);
-    });
+      // 2. Append Photos (binary files)
+      formData.photos.forEach((file) => {
+        dataToSend.append("photos", file);
+      });
 
-    // 3. API Call with Axios
-    // Note: We 'await' the response
-    // Note: Pass 'dataToSend' directly as the body
-    const response = await api.post(
-      `/service_providers/register_service_provider`,
-      dataToSend,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      // 3. API Call with Axios
+      // Note: We 'await' the response
+      // Note: Pass 'dataToSend' directly as the body
+      const response = await api.post(
+        `/service_providers/register_service_provider`,
+        dataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
         },
-      },
-    );
+      );
 
-    // 4. Axios logic: Success is typically 200 or 201
-    if (response.status === 200 || response.status === 201) {
-      toast.success("Application submitted successfully!", { id: toastId });
-      setSubmitted(true);
-      localStorage.removeItem("claimam_service_provider_form");
+      // 4. Axios logic: Success is typically 200 or 201
+      if (response.status === 200 || response.status === 201) {
+        toast.success("Application submitted successfully!", { id: toastId });
+        setSubmitted(true);
+        localStorage.removeItem("claimam_service_provider_form");
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.detail ||
+        "Network error. Please try again later.";
+
+      toast.error(errorMessage, { id: toastId });
+      console.error("Submission error:", error);
     }
-  } catch (error: any) {
-   
-    const errorMessage =
-      error.response?.data?.detail || "Network error. Please try again later.";
-
-    toast.error(errorMessage, { id: toastId });
-    console.error("Submission error:", error);
-  }
-};
+  };
   if (submitted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4">
@@ -442,10 +442,10 @@ const handleSubmit = async (e: React.FormEvent) => {
             </p>
           </div>
           <Button
-            onClick={() => window.close()}
+            onClick={() => router.push("/")}
             className="bg-[#00A878] hover:bg-[#00C853] text-white px-8 py-3"
           >
-            Close Window
+            Back to Home
           </Button>
         </div>
       </div>
@@ -702,7 +702,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select your state" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       {NIGERIAN_STATES.map((state) => (
                         <SelectItem key={state} value={state}>
                           {state}
@@ -889,7 +889,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder="Select your bank" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="max-h-[300px] overflow-y-auto">
                     {NIGERIAN_BANKS.map((bank) => (
                       <SelectItem key={bank} value={bank}>
                         {bank}
@@ -1266,7 +1266,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select years" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="<1">Less than 1 year</SelectItem>
                       <SelectItem value="1-5">1–5 years</SelectItem>
                       <SelectItem value="5-10">5–10 years</SelectItem>
@@ -1291,7 +1291,7 @@ const handleSubmit = async (e: React.FormEvent) => {
                     <SelectTrigger className="mt-1">
                       <SelectValue placeholder="Select speed" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="max-h-[300px] overflow-y-auto">
                       <SelectItem value="same-day">Same day</SelectItem>
                       <SelectItem value="next-day">Next day</SelectItem>
                       <SelectItem value="2-3-days">2–3 days</SelectItem>
