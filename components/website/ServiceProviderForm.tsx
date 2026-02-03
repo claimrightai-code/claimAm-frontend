@@ -26,6 +26,7 @@ import {
 import { toast } from "sonner";
 
 import api from "@/api";
+import { scrollToFirstError } from "@/utils/validation";
 
 // Nigerian states
 const NIGERIAN_STATES = [
@@ -164,6 +165,7 @@ export function ServiceProviderForm() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const [formData, setFormData] = useState<FormData>({
     businessName: "",
@@ -308,43 +310,44 @@ export function ServiceProviderForm() {
     }
   };
 
-  const validateForm = (): boolean => {
-    // Check mandatory fields
+  const validateForm = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
     if (!formData.businessName.trim()) {
-      toast.error("Please enter your business name");
-      return false;
+      errors.businessName = "Please enter your business name";
     }
     if (!formData.serviceType.repairs && !formData.serviceType.towing) {
-      toast.error("Please select at least one type of service");
-      return false;
+      errors.serviceType = "Please select at least one type of service";
     }
     if (!formData.ownerName.trim()) {
-      toast.error("Please enter owner/manager full name");
-      return false;
+      errors.ownerName = "Please enter owner/manager full name";
     }
     if (!formData.phone.trim() || !formData.phone.startsWith("+234")) {
-      toast.error(
-        "Please enter a valid Nigerian phone number starting with +234",
-      );
-      return false;
+      errors.phone =
+        "Please enter a valid Nigerian phone number starting with +234";
     }
     if (!formData.state) {
-      toast.error("Please select your state");
-      return false;
+      errors.state = "Please select your state";
     }
     if (!formData.lga.trim()) {
-      toast.error("Please enter your LGA");
-      return false;
+      errors.lga = "Please enter your LGA";
     }
     if (!formData.address.trim()) {
-      toast.error("Please enter your full workshop address");
-      return false;
+      errors.address = "Please enter your full workshop address";
     }
     if (!formData.agreed) {
-      toast.error("Please agree to the terms");
-      return false;
+      errors.agreed = "Please agree to the terms";
     }
-    return true;
+
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length > 0) {
+      // Show first message as a toast and return errors
+      const firstMsg = errors[Object.keys(errors)[0]];
+      toast.error(firstMsg);
+    }
+
+    return errors;
   };
 
   //   const handleSubmit = (e: React.FormEvent) => {
@@ -372,7 +375,11 @@ export function ServiceProviderForm() {
 
     if (isSaving) return;
 
-    if (!validateForm()) return;
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      scrollToFirstError(errors);
+      return;
+    }
 
     setIsSaving(true);
     const toastId = toast.loading("Submitting your application...");
@@ -552,14 +559,20 @@ export function ServiceProviderForm() {
                 </p>
                 <Input
                   id="businessName"
+                  name="businessName"
                   value={formData.businessName}
                   onChange={(e) =>
                     updateFormData("businessName", e.target.value)
                   }
                   placeholder="Enter your business name"
-                  className="mt-1"
+                  className={`mt-1 ${formErrors.businessName ? "border-red-500" : ""}`}
                   required
                 />
+                {formErrors.businessName && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.businessName}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -598,6 +611,11 @@ export function ServiceProviderForm() {
                       Towing/Recovery Services
                     </label>
                   </div>
+                  {formErrors.serviceType && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {formErrors.serviceType}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -611,12 +629,18 @@ export function ServiceProviderForm() {
                 </Label>
                 <Input
                   id="ownerName"
+                  name="ownerName"
                   value={formData.ownerName}
                   onChange={(e) => updateFormData("ownerName", e.target.value)}
                   placeholder="Enter full name"
-                  className="mt-1"
+                  className={`mt-1 ${formErrors.ownerName ? "border-red-500" : ""}`}
                   required
                 />
+                {formErrors.ownerName && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.ownerName}
+                  </p>
+                )}
               </div>
 
               <div className="grid md:grid-cols-2 gap-4">
@@ -632,13 +656,19 @@ export function ServiceProviderForm() {
                   </p>
                   <Input
                     id="phone"
+                    name="phone"
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => updateFormData("phone", e.target.value)}
                     placeholder="+234..."
-                    className="mt-1"
+                    className={`mt-1 ${formErrors.phone ? "border-red-500" : ""}`}
                     required
                   />
+                  {formErrors.phone && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {formErrors.phone}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -715,6 +745,8 @@ export function ServiceProviderForm() {
                       ))}
                     </SelectContent>
                   </Select>
+                  {/* Hidden input so we can target state with name selector for validation scrolling */}
+                  <input type="hidden" name="state" value={formData.state} />
                 </div>
 
                 <div>
@@ -724,12 +756,18 @@ export function ServiceProviderForm() {
                   </Label>
                   <Input
                     id="lga"
+                    name="lga"
                     value={formData.lga}
                     onChange={(e) => updateFormData("lga", e.target.value)}
                     placeholder="Enter your LGA"
-                    className="mt-1"
+                    className={`mt-1 ${formErrors.lga ? "border-red-500" : ""}`}
                     required
                   />
+                  {formErrors.lga && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {formErrors.lga}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -745,13 +783,19 @@ export function ServiceProviderForm() {
                 </p>
                 <Textarea
                   id="address"
+                  name="address"
                   value={formData.address}
                   onChange={(e) => updateFormData("address", e.target.value)}
                   placeholder="Enter full address"
-                  className="mt-1"
+                  className={`mt-1 ${formErrors.address ? "border-red-500" : ""}`}
                   rows={3}
                   required
                 />
+                {formErrors.address && (
+                  <p className="text-sm text-red-600 mt-1">
+                    {formErrors.address}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -1381,6 +1425,7 @@ export function ServiceProviderForm() {
                 <div className="flex items-start space-x-3">
                   <Checkbox
                     id="agreed"
+                    name="agreed"
                     checked={formData.agreed}
                     onCheckedChange={(checked) =>
                       updateFormData("agreed", checked)
@@ -1411,10 +1456,10 @@ export function ServiceProviderForm() {
                 {isSaving ? "Sending..." : "Send Application"}
               </Button>
 
-              {!formData.agreed && (
-                <p className="text-sm text-orange-600 text-center flex items-center justify-center gap-2">
+              {formErrors.agreed && (
+                <p className="text-sm text-red-600 text-center flex items-center justify-center gap-2">
                   <AlertCircle className="w-4 h-4" />
-                  Please agree to the terms above to submit
+                  {formErrors.agreed}
                 </p>
               )}
             </div>

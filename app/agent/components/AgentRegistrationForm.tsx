@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
 import { Lock, Briefcase, Loader2, Store, Users } from "lucide-react";
 import { useUserContext } from "@/hooks/hooks";
+import { isEmail, isPhone, scrollToFirstError } from "@/utils/validation";
 
 interface AgentRegistrationFormProps {
   onPaymentComplete: (agentData: any) => void;
@@ -76,6 +77,56 @@ export function AgentRegistrationForm({
     referralCode: "",
   });
 
+  // Validation state
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [isValid, setIsValid] = useState(false);
+
+  const validateForm = (): Record<string, string> => {
+    const errors: Record<string, string> = {};
+
+    // Full name
+    if (!formData.fullName.trim()) {
+      errors.fullName = "Please enter your full name";
+    }
+
+    // Email
+    if (!formData.email.trim()) {
+      errors.email = "Please enter your email";
+    } else if (!isEmail(formData.email)) {
+      errors.email = "Please enter a valid email address";
+    }
+
+    // Password (min 8 chars)
+    if (!formData.password) {
+      errors.password = "Please create a password";
+    } else if (formData.password.length < 8) {
+      errors.password = "Password should be at least 8 characters";
+    }
+
+    // WhatsApp (basic check)
+    if (!formData.whatsapp.trim()) {
+      errors.whatsapp = "Please enter your WhatsApp number";
+    } else if (!isPhone(formData.whatsapp)) {
+      errors.whatsapp = "Please enter a valid phone number";
+    }
+ 
+    // State, LGA, Shop Address
+    if (!formData.state) errors.state = "Please select your state";
+    if (!formData.lga.trim()) errors.lga = "Please enter your LGA";
+    if (!formData.shopLocation.trim())
+      errors.shopLocation = "Please enter your shop address";
+
+    setFormErrors(errors);
+    setIsValid(Object.keys(errors).length === 0);
+
+    return errors;
+  };
+
+  // Re-validate on change
+  useEffect(() => {
+    validateForm();
+  }, [formData]);
+
   const { registerAgentFunc, verifyPaymentFunc } = useUserContext();
 
   // Paystack State
@@ -138,6 +189,18 @@ export function AgentRegistrationForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Prevent double submit
+    if (loading) return;
+
+    // Validate and show messages
+    const errors = validateForm();
+    if (Object.keys(errors).length > 0) {
+      // Scroll to the first error and focus it
+      scrollToFirstError(errors);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -168,6 +231,8 @@ export function AgentRegistrationForm({
           amount: 1500 * 100,
           publicKey: process.env.NEXT_PUBLIC_PAYSTACK_KEY || "",
         });
+
+  const _ariaDisabled = (loading || !isValid) ? "true" : "false";
 
         setReadyToPay(true);
       } else {
@@ -208,13 +273,17 @@ export function AgentRegistrationForm({
                 </label>
                 <input
                   type="email"
+                  name="email"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.email ? 'border-red-500' : 'border-slate-200'}`}
                   placeholder="your@email.com"
                   onChange={(e) =>
                     setFormData({ ...formData, email: e.target.value })
                   }
                 />
+                {formErrors.email && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.email}</p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="block text-slate-700 text-sm font-medium">
@@ -222,13 +291,17 @@ export function AgentRegistrationForm({
                 </label>
                 <input
                   type="password"
+                  name="password"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.password ? 'border-red-500' : 'border-slate-200'}`}
                   placeholder="Create a password"
                   onChange={(e) =>
                     setFormData({ ...formData, password: e.target.value })
                   }
                 />
+                {formErrors.password && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.password}</p>
+                )}
               </div>
             </div>
 
@@ -240,12 +313,16 @@ export function AgentRegistrationForm({
                 </label>
                 <input
                   type="text"
+                  name="fullName"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.fullName ? 'border-red-500' : 'border-slate-200'}`}
                   onChange={(e) =>
                     setFormData({ ...formData, fullName: e.target.value })
                   }
                 />
+                {formErrors.fullName && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.fullName}</p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="block text-slate-700 text-sm font-medium">
@@ -253,12 +330,16 @@ export function AgentRegistrationForm({
                 </label>
                 <input
                   type="tel"
+                  name="whatsapp"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.whatsapp ? 'border-red-500' : 'border-slate-200'}`}
                   onChange={(e) =>
                     setFormData({ ...formData, whatsapp: e.target.value })
                   }
                 />
+                {formErrors.whatsapp && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.whatsapp}</p>
+                )}
               </div>
             </div>
 
@@ -269,8 +350,9 @@ export function AgentRegistrationForm({
                   State
                 </label>
                 <select
+                  name="state"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm appearance-none focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm appearance-none focus:border-blue-500 focus:outline-none ${formErrors.state ? 'border-red-500' : 'border-slate-200'}`}
                   onChange={(e) =>
                     setFormData({ ...formData, state: e.target.value })
                   }
@@ -282,6 +364,9 @@ export function AgentRegistrationForm({
                     </option>
                   ))}
                 </select>
+                {formErrors.state && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.state}</p>
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="block text-slate-700 text-sm font-medium">
@@ -289,13 +374,17 @@ export function AgentRegistrationForm({
                 </label>
                 <input
                   type="text"
+                  name="lga"
                   required
-                  className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                  className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.lga ? 'border-red-500' : 'border-slate-200'}`}
                   placeholder="City / LGA"
                   onChange={(e) =>
                     setFormData({ ...formData, lga: e.target.value })
                   }
                 />
+                {formErrors.lga && (
+                  <p className="text-sm text-red-600 mt-1">{formErrors.lga}</p>
+                )}
               </div>
             </div>
 
@@ -305,13 +394,17 @@ export function AgentRegistrationForm({
               </label>
               <input
                 type="text"
+                name="shopLocation"
                 required
-                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-sm focus:border-blue-500 focus:outline-none"
+                className={`w-full px-4 py-3 rounded-xl bg-slate-50 border text-sm focus:border-blue-500 focus:outline-none ${formErrors.shopLocation ? 'border-red-500' : 'border-slate-200'}`}
                 placeholder="e.g. 12 Bode Thomas, Surulere"
                 onChange={(e) =>
                   setFormData({ ...formData, shopLocation: e.target.value })
                 }
               />
+              {formErrors.shopLocation && (
+                <p className="text-sm text-red-600 mt-1">{formErrors.shopLocation}</p>
+              )}
             </div>
 
             {/* 4. Business Profile (Added Back) */}
@@ -416,8 +509,9 @@ export function AgentRegistrationForm({
             <div className="pt-4">
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
+                disabled={loading || !isValid}
+                aria-disabled={_ariaDisabled}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
