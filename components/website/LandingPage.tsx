@@ -5,9 +5,9 @@ import { Input } from '../ui/input';
 import { ClaimAmLogo } from '../ClaimAmLogo';
 import Image from 'next/image';
 import { usePathname, useRouter } from "next/navigation";
-import heroimage from "@/assets/images/assets/heroimage.png";
-import motorist from "@/assets/images/assets/motorist.png";
-import woman from "@/assets/images/assets/womanwithphone.jpg"
+import heroimage from "@/assets/images/assets/hero101.jpg";
+import motorist from "@/assets/images/assets/road.jpg";
+import woman from "@/assets/images/assets/woman.jpg";
 import { 
   Menu,
   X,
