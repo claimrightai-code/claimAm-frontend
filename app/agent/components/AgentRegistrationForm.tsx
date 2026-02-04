@@ -16,8 +16,7 @@ const BUSINESS_TYPES = [
   { label: "Bet Shop", value: "bet_shop" },
   { label: "Phone Shop", value: "phone_shop" },
   { label: "Other", value: "other" },
-
-
+];
 const NIGERIAN_STATES = [
   "Abia",
   "Adamawa",
