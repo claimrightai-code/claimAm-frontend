@@ -59,29 +59,9 @@ export function ReferralDashboard({
     } else {
       switch (platform) {
         case "whatsapp": {
-          const channelUrl =
-            "https://chat.whatsapp.com/0029VbCPveeLI8YeAFhoUY2d";
-          const message = `Join ClaimAm as a Founding Agent! 🔥\n\nEarn ₦5,000-₦50,000+ daily helping Nigerians with insurance claims.\n\nUse my code: ${referralCode}\n${referralLink}`;
-          const messageToCopy = message;
-
-          // Open the channel in a new tab
+          // Open the WhatsApp channel directly (no share/copy behavior)
+          const channelUrl = "https://chat.whatsapp.com/0029VbCPveeLI8YeAFhoUY2d";
           window.open(channelUrl, "_blank");
-
-          // Try to copy to clipboard
-          try {
-            await navigator.clipboard.writeText(messageToCopy);
-            // optional: show a quick UI toast informing copy success
-            alert(
-              "Invite message copied to clipboard. Paste it in the WhatsApp channel to invite others.",
-            );
-          } catch (err) {
-            // fallback: open WhatsApp Web share with message in a new tab (works for direct chats, not channels)
-            const waShare = `https://wa.me/?text=${encodeURIComponent(messageToCopy)}`;
-            window.open(waShare, "_blank");
-            alert(
-              "Could not copy automatically. A WhatsApp share tab was opened — paste or send the message there.",
-            );
-          }
           break;
         }
         case "share":

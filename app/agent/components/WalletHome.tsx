@@ -22,9 +22,16 @@ export function WalletHome({ onNavigate }: WalletHomeProps) {
   const { data: stats, isLoading } = useAgentStats();
 
   // 3. Safe Fallback
-  console.log(stats)
+  console.log(stats);
   const balance = stats?.wallet_balance || 0;
-  
+
+  // Format balance with Naira sign (₦) using Intl.NumberFormat
+  const formattedBalance = new Intl.NumberFormat("en-NG", {
+    style: "currency",
+    currency: "NGN",
+    maximumFractionDigits: 0,
+  }).format(balance);
+
   return (
     <div className="px-4 py-6 bg-slate-50">
       <div className="max-w-2xl mx-auto">
@@ -53,7 +60,7 @@ export function WalletHome({ onNavigate }: WalletHomeProps) {
                 <div className="h-10 w-48 bg-white/20 animate-pulse rounded-lg mt-2" />
               ) : (
                 <h2 className="text-4xl font-bold tracking-tight font-mono">
-                  ₦ {showBalance ? `${balance.toLocaleString()}` : "•••••••"}
+                  {showBalance ? formattedBalance : "•••••••"}
                 </h2>
               )}
             </div>
