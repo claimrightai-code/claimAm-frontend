@@ -48,34 +48,37 @@ export function ReferralDashboard({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShare = async (platform: "whatsapp" | "share" | "sms") => {
-    const message = `Join ClaimAm as a Founding Agent! 🔥\n\nEarn ₦5,000-₦50,000+ daily helping Nigerians with insurance claims.\n\nUse my code: ${referralCode}\n${referralLink}`;
+   const handleShare = (platform: "whatsapp" | "facebook" | "sms") => {
+     const message = `Join ClaimAm as a Founding Agent! 🔥\n\nEarn ₦5,000-₦50,000+ daily helping Nigerians with insurance claims.\n\nUse my code: ${referralCode}\n${referralLink}`;
 
-    if (navigator.share) {
-      navigator.share({
-        title: "Join ClaimAm",
-        text: message,
-      });
-    } else {
-      switch (platform) {
-        case "whatsapp": {
-          // Open the WhatsApp channel directly (no share/copy behavior)
-          const channelUrl = "https://chat.whatsapp.com/0029VbCPveeLI8YeAFhoUY2d";
-          window.open(channelUrl, "_blank");
-          break;
-        }
-        case "share":
-          window.open(
-            `https://claimam.ng/agent/?u=${encodeURIComponent(referralCode)}&quote=${encodeURIComponent(message)}`,
-            "_blank",
-          );
-          break;
-        case "sms":
-          window.open(`sms:?body=${encodeURIComponent(message)}`, "_blank");
-          break;
-      }
-    }
-  };
+     // WhatsApp redirects to community channel
+     if (platform === "whatsapp") {
+       window.open(
+         "https://whatsapp.com/channel/0029VbCPveeLI8YeAFhoUY2d",
+         "_blank",
+       );
+       return;
+     }
+
+     if (navigator.share) {
+       navigator.share({
+         title: "Join ClaimAm",
+         text: message,
+       });
+     } else {
+       switch (platform) {
+         case "facebook":
+           window.open(
+             `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}&quote=${encodeURIComponent(message)}`,
+             "_blank",
+           );
+           break;
+         case "sms":
+           window.open(`sms:?body=${encodeURIComponent(message)}`, "_blank");
+           break;
+       }
+     }
+   };
 
   return (
     <section className="py-8 px-4 bg-slate-50">
