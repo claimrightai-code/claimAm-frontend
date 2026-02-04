@@ -11,7 +11,10 @@ export function Footer() {
           {/* Brand Column */}
           <div className="col-span-1 md:col-span-1">
             <div className="flex items-center gap-2 mb-4">
-              <div className="relative w-6 h-6 flex items-center justify-center">
+              <div
+                className="relative w-6 h-6 flex items-center justify-center"
+                onClick={() => (window.location.href = "/")}
+              >
                 <ClaimAmLogo size={60} withBackground={false} />
               </div>
               <span className="text-xl font-bold text-white tracking-tight">
@@ -119,8 +122,8 @@ export function Footer() {
             </div>
             <div>
               <p className="text-green-400 font-semibold mb-6">
-              📞 Dial *669# from any phone, anywhere in Nigeria
-            </p>
+                📞 Dial *669# from any phone, anywhere in Nigeria
+              </p>
             </div>
           </div>
         </div>

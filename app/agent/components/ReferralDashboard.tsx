@@ -22,7 +22,7 @@ export function ReferralDashboard({
   referralCode,
   totalReferrals,
   moneyEarned,
-  fullName
+  fullName,
 }: ReferralDashboardProps) {
   const [copied, setCopied] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
@@ -48,7 +48,7 @@ export function ReferralDashboard({
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleShare = (platform: "whatsapp" | "share" | "sms") => {
+  const handleShare = async (platform: "whatsapp" | "share" | "sms") => {
     const message = `Join ClaimAm as a Founding Agent! 🔥\n\nEarn ₦5,000-₦50,000+ daily helping Nigerians with insurance claims.\n\nUse my code: ${referralCode}\n${referralLink}`;
 
     if (navigator.share) {
@@ -58,12 +58,32 @@ export function ReferralDashboard({
       });
     } else {
       switch (platform) {
-        case "whatsapp":
-          window.open(
-            `https://whatsapp.com/channel/0029VbCPveeLI8YeAFhoUY2d`,
-            "_blank",
-          );
+        case "whatsapp": {
+          const channelUrl =
+            "https://chat.whatsapp.com/0029VbCPveeLI8YeAFhoUY2d";
+          const message = `Join ClaimAm as a Founding Agent! 🔥\n\nEarn ₦5,000-₦50,000+ daily helping Nigerians with insurance claims.\n\nUse my code: ${referralCode}\n${referralLink}`;
+          const messageToCopy = message;
+
+          // Open the channel in a new tab
+          window.open(channelUrl, "_blank");
+
+          // Try to copy to clipboard
+          try {
+            await navigator.clipboard.writeText(messageToCopy);
+            // optional: show a quick UI toast informing copy success
+            alert(
+              "Invite message copied to clipboard. Paste it in the WhatsApp channel to invite others.",
+            );
+          } catch (err) {
+            // fallback: open WhatsApp Web share with message in a new tab (works for direct chats, not channels)
+            const waShare = `https://wa.me/?text=${encodeURIComponent(messageToCopy)}`;
+            window.open(waShare, "_blank");
+            alert(
+              "Could not copy automatically. A WhatsApp share tab was opened — paste or send the message there.",
+            );
+          }
           break;
+        }
         case "share":
           window.open(
             `https://claimam.ng/agent/?u=${encodeURIComponent(referralCode)}&quote=${encodeURIComponent(message)}`,
@@ -88,7 +108,8 @@ export function ReferralDashboard({
                 Referral Hub
               </h2>
               <p className="text-slate-500 text-xs md:text-sm">
-                Hello {fullName}, Grow your network, and increase your earnings
+                Hello <span className="font-bold"> {fullName}</span>, Grow your
+                network, and increase your earnings
               </p>
             </div>
             <button
@@ -251,7 +272,7 @@ export function ReferralDashboard({
                 className="group flex flex-col items-center justify-center gap-2 py-3 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] transition-colors"
               >
                 <Share2 size={20} className="fill-current" />
-                <span className="text-xs font-bold">Share</span> 
+                <span className="text-xs font-bold">Share</span>
               </button>
 
               <button

@@ -13,10 +13,11 @@ interface AgentRegistrationFormProps {
 // Backend Enum Mappings
 const BUSINESS_TYPES = [
   { label: "POS Stand", value: "pos_point" },
-  { label: "Bet Shop", value: "phone_shop" },
-  { label: "Phone Shop", value: "mechanic_workshop" },
+  { label: "Bet Shop", value: "bet_shop" },
+  { label: "Phone Shop", value: "phone_shop" },
   { label: "Other", value: "other" },
-];
+
+
 const NIGERIAN_STATES = [
   "Abia",
   "Adamawa",
@@ -128,9 +129,6 @@ export function AgentRegistrationForm({
   }, [formData]);
 
   const { registerAgentFunc, verifyPaymentFunc } = useUserContext();
-
-  // ARIA-friendly boolean for disabled state used in markup (React will stringify it)
-  const _ariaDisabled = loading || !isValid;
 
   // Paystack State
   const [paystackConfig, setPaystackConfig] = useState({
@@ -261,7 +259,7 @@ export function AgentRegistrationForm({
               Agent Application
             </h2>
             <div className="inline-block bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-sm font-semibold">
-              First 3,000 Agents Only
+              First 5,000 Agents Only
             </div>
           </div>
 

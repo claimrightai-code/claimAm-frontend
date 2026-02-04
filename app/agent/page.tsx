@@ -9,7 +9,7 @@ import { TrustSection } from "./components/TrustSection";
 import { AgentTeaser } from "./components/AgentTeaser";
 import { Leaderboard } from "./components/Leaderboard";
 // import { FoundingMemberForm } from "./components/FoundingMemberForm";
-import { AgentRegistrationForm } from "./components/AgentRegistrationForm";
+// import { AgentRegistrationForm } from "./components/AgentRegistrationForm";
 import { Footer } from "./components/Footer";
 import { WhatsAppButton } from "./components/WhatsAppButton";
 import { DigitalAgentID } from "./components/DigitalAgentID";
@@ -98,10 +98,6 @@ export default function App() {
     }
   }, [notification]);
 
-  // Search params handling moved to the client-only `AgentSearchParams` component.
-  // That handler will call `setShowLoginModal(true)` and set `initialEmail` when needed.
-
-
   // 3. DERIVED STATE: This object rebuilds itself every time 'stats' or 'user' changes
   const agentData: AgentData | null = user
     ? {
@@ -126,7 +122,7 @@ export default function App() {
     console.log("Logged in user data:", apiUser);
 
     // setAgentData(Data);
-    
+
     // console.log(Data)
     setShowLoginModal(false); // Close modal
     setCurrentPage("agent-dashboard"); // Go to dashboard
@@ -134,9 +130,9 @@ export default function App() {
 
   // 2. Create the Logout Handler
   const handleLogout = () => {
-    logoutFunc(); 
+    logoutFunc();
     // setCurrentPage("landing");
-    // setAgentData(null); 
+    // setAgentData(null);
   };
 
   const handleCloseAgentID = () => {
@@ -263,10 +259,9 @@ export default function App() {
                 onClick={handleLogout}
                 className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 rounded-xl transition-colors"
               >
-              Log out
+                Log out
               </button>
             </div>
-            
           </div>
         </>
       )}
@@ -309,7 +304,6 @@ export default function App() {
           onViewWallet={() => setCurrentPage("agent-dashboard")}
         />
       )}
-
     </div>
   );
 }

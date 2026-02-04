@@ -53,7 +53,7 @@ export function WalletHome({ onNavigate }: WalletHomeProps) {
                 <div className="h-10 w-48 bg-white/20 animate-pulse rounded-lg mt-2" />
               ) : (
                 <h2 className="text-4xl font-bold tracking-tight font-mono">
-                  {showBalance ? `₦${balance.toLocaleString()}` : "₦ •••••••"}
+                  {showBalance ? `₦ ${balance.toLocaleString()}` : "₦ •••••••"}
                 </h2>
               )}
             </div>
