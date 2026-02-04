@@ -1,9 +1,11 @@
+"use-client";
 import React from "react";
 import dynamic from "next/dynamic";
 
 // Dynamically import the VerifyPayment component client-side only
 const VerifyPayment = dynamic(
-  () => import("@/../../components/VerifyPayment").then((mod) => mod.VerifyPayment),
+  () =>
+    import("@/../../components/VerifyPayment").then((mod) => mod.VerifyPayment),
   { ssr: false, loading: () => <p className="text-center p-4">Loading...</p> },
 );
 export default function CompletePaymentPage() {
