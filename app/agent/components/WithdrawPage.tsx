@@ -94,7 +94,7 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
       // 2. SUCCESS LOGIC
       setTxnDetails({
         ref: res.reference,
-        status: res.current_status, // e.g. "pending" or "success"
+        status: res.status, // e.g. "pending" or "success"
       });
       setWithdrawSuccess(true);
     } catch (error: any) {
