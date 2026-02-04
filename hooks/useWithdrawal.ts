@@ -31,8 +31,8 @@ export function useWithdraw() {
     const res = await api.post("/wallet/withdraw", data, {
       headers: { Authorization: `Bearer ${cookies}` },
     });
+    console.log(res);
     return res.data;
   };
-
   return { banks, resolveAccount, withdraw };
 }

@@ -20,7 +20,7 @@ export default function Otppage({
   // 1. Get resendOtpFunc from context
   const { otpFunc, resendOtpFunc } = useUserContext();
   const { toast } = useToast();
- const router = useRouter();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const paramEmail = searchParams.get("email") ?? "";
 
@@ -32,9 +32,39 @@ export default function Otppage({
   const [loading, setLoading] = useState(false);
   const [resending, setResending] = useState(false); // Separate loading state for resend text
 
+  // Prevent multiple OTP sends: track whether an OTP has already been requested
+  const [hasRequestedOtp, setHasRequestedOtp] = useState(false);
+  // Cooldown (in seconds) to prevent immediate resends after a send
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Manage a countdown timer for the resend cooldown
+  useEffect(() => {
+    let timer: any = null;
+    if (resendCooldown > 0) {
+      timer = setInterval(() => {
+        setResendCooldown((c) => (c > 0 ? c - 1 : 0));
+      }, 1000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
+  }, [resendCooldown]);
+
   // 3. Handle Initial Email Submission (Request OTP)
   const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // If we've already requested an OTP for this session, don't request another one
+    if (hasRequestedOtp) {
+      toast({
+        title: "OTP Already Sent",
+        description:
+          "A code has already been sent to this email. Check your inbox.",
+      });
+      setStep("otp");
+      return;
+    }
+
     if (!email.includes("@")) {
       toast({
         title: "Invalid Email",
@@ -45,23 +75,32 @@ export default function Otppage({
     }
 
     setLoading(true);
+    // Immediately mark that we've requested an OTP to prevent double requests
+    setHasRequestedOtp(true);
+    // Start a short cooldown to prevent immediate resends (e.g., 60s)
+    setResendCooldown(60);
 
     try {
       // Call the API to send the initial OTP
-      console.log(email)
+      // console.log(email);
       const res = await resendOtpFunc({ email });
-      console.log(res)
+      console.log(res);
 
-      
       if (res.ok) {
         toast({
           title: "OTP Sent",
           description: "Check your inbox for the code.",
         });
         setStep("otp");
+      } else {
+        // Reset the request flag and cooldown so user can try again
+        setHasRequestedOtp(false);
+        setResendCooldown(0);
       }
     } catch (error) {
       console.error(error);
+      setHasRequestedOtp(false);
+      setResendCooldown(0);
     } finally {
       setLoading(false);
     }
@@ -70,18 +109,38 @@ export default function Otppage({
   // 4. Handle "Resend Code" Click
   const handleResendClick = async () => {
     if (resending) return;
+
+    // Prevent resends during cooldown
+    if (resendCooldown > 0) {
+      toast({
+        title: "Please Wait",
+        description: `You can request a new code in ${resendCooldown} seconds.`,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setResending(true);
+    // start cooldown immediately to prevent rapid repeated clicks
+    setResendCooldown(60);
+
     try {
-      console.log(email)
+      console.log(email);
       const res = await resendOtpFunc({ email });
       if (res.ok) {
+        // Ensure we mark that an OTP was requested
+        setHasRequestedOtp(true);
         toast({
           title: "Code Resent",
           description: "A new code has been sent to your email.",
         });
+      } else {
+        // failed - allow retry by clearing cooldown
+        setResendCooldown(0);
       }
     } catch (error) {
       console.error(error);
+      setResendCooldown(0);
     } finally {
       setResending(false);
     }
@@ -229,10 +288,14 @@ export default function Otppage({
               {/* Resend Button Logic */}
               <button
                 onClick={handleResendClick}
-                disabled={resending}
+                disabled={resending || resendCooldown > 0}
                 className="text-[#2196F3] text-xs mb-4 hover:underline disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
-                {resending ? "Sending..." : "Resend Code"}
+                {resending
+                  ? "Sending..."
+                  : resendCooldown > 0
+                    ? `Resend Code (${resendCooldown}s)`
+                    : "Resend Code"}
               </button>
 
               <button

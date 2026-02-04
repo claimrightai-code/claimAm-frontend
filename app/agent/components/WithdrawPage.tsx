@@ -22,6 +22,10 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
   // 1. USE HOOKS
   const { banks, resolveAccount, withdraw } = useWithdraw();
   const { toast } = useToast();
+  const [txnDetails, setTxnDetails] = useState<{
+    ref: string;
+    status: string;
+  } | null>(null);
 
   const [accountNumber, setAccountNumber] = useState("");
   const [bankCode, setBankCode] = useState(""); // Store Code, not just Name
@@ -63,8 +67,8 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
     e.preventDefault();
     const withdrawAmount = parseInt(amount);
 
-    if (withdrawAmount < 1000) {
-      toast({ variant: "destructive", title: "Minimum withdrawal is ₦1,000" });
+    if (withdrawAmount < 200) {
+      toast({ variant: "destructive", title: "Minimum withdrawal is ₦200" });
       return;
     }
 
@@ -80,11 +84,17 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
 
     setLoading(true);
     try {
-      await withdraw({
-        amount: withdrawAmount,
+      const res = await withdraw({
+        amount: parseInt(amount),
         account_number: accountNumber,
         bank_code: bankCode,
         account_name: accountName,
+      });
+
+      // 2. SUCCESS LOGIC
+      setTxnDetails({
+        ref: res.reference,
+        status: res.current_status, // e.g. "pending" or "success"
       });
       setWithdrawSuccess(true);
     } catch (error: any) {
@@ -97,57 +107,87 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
       setLoading(false);
     }
   };
+if (withdrawSuccess) {
+  const isPending = txnDetails?.status !== "success";
 
-  if (withdrawSuccess) {
-    return (
-      <section className="min-h-screen bg-slate-50 py-12 px-4 flex items-center justify-center">
-        <div className="max-w-md w-full animate-in zoom-in duration-300">
-          <div className="bg-white rounded-[2rem] p-8 text-center shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
-            {/* ... success visuals ... */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-[#00C853]"></div>
-            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+  return (
+    <section className="min-h-screen bg-slate-50 py-12 px-4 flex items-center justify-center">
+      <div className="max-w-md w-full animate-in zoom-in duration-300">
+        <div className="bg-white rounded-[2rem] p-8 text-center shadow-xl shadow-slate-200/50 border border-slate-100 relative overflow-hidden">
+          {/* Top Decorative Bar - Changes color based on status */}
+          <div
+            className={`absolute top-0 left-0 w-full h-2 ${isPending ? "bg-orange-500" : "bg-[#00C853]"}`}
+          ></div>
+
+          <div
+            className={`w-20 h-20 ${isPending ? "bg-orange-50" : "bg-green-50"} rounded-full flex items-center justify-center mx-auto mb-6`}
+          >
+            {isPending ? (
+              <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
+            ) : (
               <CheckCircle2 className="w-10 h-10 text-[#00C853]" />
-            </div>
+            )}
+          </div>
 
-            <h3 className="text-2xl font-bold text-slate-900 mb-2">
-              Withdrawal Successful!
-            </h3>
-            <p className="text-slate-500 text-sm mb-8">
-              Your transfer is being processed.
-            </p>
+          <h3 className="text-2xl font-bold text-slate-900 mb-2">
+            {isPending ? "Transfer Processing" : "Withdrawal Successful!"}
+          </h3>
+          <p className="text-slate-500 text-sm mb-8 leading-relaxed">
+            {isPending
+              ? "Paystack is communicating with your bank. Funds usually arrive in minutes."
+              : "Your funds have been sent successfully to your bank account."}
+          </p>
 
-            <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
-              <p className="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">
+          <div className="bg-slate-50 rounded-2xl p-6 mb-8 border border-slate-100">
+            <div className="flex justify-between items-center mb-4">
+              <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">
                 Amount Sent
               </p>
-              <div className="text-4xl font-bold text-slate-900 mb-4 tracking-tight">
-                ₦{parseInt(amount).toLocaleString()}
-              </div>
-              <div className="flex flex-col gap-3 pt-4 border-t border-slate-200">
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Bank</span>
-                  <span className="font-medium text-slate-900">{bankName}</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span className="text-slate-500">Account</span>
-                  <span className="font-medium text-slate-900">
-                    {accountName}
-                  </span>
-                </div>
-              </div>
+              <span
+                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${isPending ? "bg-orange-100 text-orange-700" : "bg-green-100 text-green-700"}`}
+              >
+                {txnDetails?.status?.toUpperCase() || "PENDING"}
+              </span>
             </div>
 
-            <button
-              onClick={onBack}
-              className="w-full bg-[#00C853] hover:bg-green-600 text-white font-bold py-4 rounded-xl transition-all shadow-lg"
-            >
-              Back to Wallet
-            </button>
+            <div className="text-4xl font-bold text-slate-900 mb-4 tracking-tight">
+              ₦{parseInt(amount).toLocaleString()}
+            </div>
+
+            <div className="flex flex-col gap-3 pt-4 border-t border-slate-200">
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Bank</span>
+                <span className="font-medium text-slate-900">{bankName}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500">Account</span>
+                <span className="font-medium text-slate-900">
+                  {accountName}
+                </span>
+              </div>
+              {/* Added Reference ID for Support */}
+              <div className="flex justify-between text-[10px] pt-2 border-t border-dashed">
+                <span className="text-slate-400 uppercase font-bold">
+                  Reference
+                </span>
+                <span className="font-mono text-slate-500">
+                  {txnDetails?.ref}
+                </span>
+              </div>
+            </div>
           </div>
+
+          <button
+            onClick={onBack}
+            className={`w-full ${isPending ? "bg-slate-800" : "bg-[#00C853]"} hover:opacity-90 text-white font-bold py-4 rounded-xl transition-all shadow-lg`}
+          >
+            Back to Wallet
+          </button>
         </div>
-      </section>
-    );
-  }
+      </div>
+    </section>
+  );
+}
 
   return (
     <section className="min-h-screen bg-slate-50 py-8 px-4">
