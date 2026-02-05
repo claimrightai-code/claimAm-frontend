@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "ClaimAm | Claim an insurance within minutes",
   // Favicon for browser tab
   icons: {
-    icon: "/assets/images/claimlogo.png",
+    icon: "/assets/images/faveicon.ico",
   },
   // 1. FIX: Move Google Verification here
   verification: {

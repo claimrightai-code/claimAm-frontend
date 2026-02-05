@@ -16,6 +16,9 @@ import FooterOne from "@/layout/footer/footer-one";
 import Platform from "@/layout/platformpage";
 
 export const metadata: Metadata = {
+  icons: {
+    icon: "/assets/images/faveicon.ico",
+  },
   title: "ClaimAm | Claim an insurance within minutes",
 };
 
