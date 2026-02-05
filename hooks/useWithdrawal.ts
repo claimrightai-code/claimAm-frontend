@@ -28,10 +28,11 @@ export function useWithdraw() {
   };
 
   const withdraw = async (data: any) => {
+    console.log("withdrawal cred:", data);
     const res = await api.post("/wallet/withdraw", data, {
       headers: { Authorization: `Bearer ${cookies}` },
     });
-    console.log(res);
+    console.log("withdrawal response:", res);
     return res.data;
   };
   return { banks, resolveAccount, withdraw };

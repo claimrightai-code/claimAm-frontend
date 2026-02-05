@@ -45,6 +45,7 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
         try {
           const name = await resolveAccount(accountNumber, bankCode);
           console.log(name)
+          console.log(bankCode);
           setAccountName(name);
           toast({ title: "Account Verified", description: name });
         } catch (error) {
