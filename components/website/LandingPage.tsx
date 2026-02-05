@@ -6,7 +6,7 @@ import { ClaimAmLogo } from '../ClaimAmLogo';
 import Image from 'next/image';
 import { usePathname, useRouter } from "next/navigation";
 import heroimage from "@/assets/images/assets/hero101.jpg";
-import motorist from "@/assets/images/assets/road.jpg";
+import motorist from "@/assets/images/assets/roadmotor.jpg";
 import woman from "@/assets/images/assets/woman.jpg";
 import { 
   Menu,
