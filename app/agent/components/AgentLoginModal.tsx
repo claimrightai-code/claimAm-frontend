@@ -151,7 +151,7 @@ export function AgentLoginForm({
           {/* Rural Illustration (Footer) */}
           <div className="mt-8 text-center border-t border-gray-100 pt-6">
             <p className="text-xs text-gray-400 mb-4 font-medium">
-              Trusted by 4,821 agents across Nigeria
+              Trusted by our agents across Nigeria
             </p>
             <div className="flex justify-center gap-4">
               <div

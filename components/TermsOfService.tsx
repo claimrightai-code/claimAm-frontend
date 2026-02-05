@@ -215,11 +215,11 @@ export function TermsOfService({ onBack }: TermsOfServiceProps) {
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:support@ClaimAm.com" className="text-sm hover:underline">support@ClaimAm.com</a>
+                <a href="mailto:support@claimam.com" className="text-sm hover:underline">support@claimam.com</a>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                <a href="tel:+2348067969685" className="text-sm hover:underline">+234 806 796 9685</a>
+                <a href="tel:+2348067969685" className="text-sm hover:underline">+234 911 822 3417</a>
               </div>
             </div>
           </div>

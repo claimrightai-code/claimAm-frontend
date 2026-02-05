@@ -17,7 +17,7 @@ import Platform from "@/layout/platformpage";
 
 export const metadata: Metadata = {
   icons: {
-    icon: "/assets/images/faveicon.ico",
+    icon: "/assets/images/favicon.ico",
   },
   title: "ClaimAm | Claim an insurance within minutes",
 };
