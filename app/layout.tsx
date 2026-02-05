@@ -17,6 +17,10 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "ClaimAm - Insurance",
   description: "ClaimAm | Claim an insurance within minutes",
+  // Favicon for browser tab
+  icons: {
+    icon: "/assets/images/claimlogo.png",
+  },
   // 1. FIX: Move Google Verification here
   verification: {
     google: "sR4xvVlGTHrlKdNgeT9wxmgal1nfyfp_PbmDD6QSqOc",
