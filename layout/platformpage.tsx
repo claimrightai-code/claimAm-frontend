@@ -38,7 +38,8 @@ type Screen =
   | "privacy"
   | "terms"
   | "recurring"
-  | "tier";
+  | "tier"
+  | "website";
 type DashboardType =
   | "agent"
   | "mobile"
@@ -223,7 +224,7 @@ const navigate = () => {
       <>
         <MobileApp />
         <button
-          onClick={() => setDashboardType("selector")}
+          onClick={() => setDashboardType("website")}
           className="fixed top-4 right-4 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all z-50 text-sm"
         >
           ← Back to Dashboards
@@ -237,7 +238,7 @@ const navigate = () => {
       <>
         <AdminDashboard />
         <button
-          onClick={() => setDashboardType("selector")}
+          onClick={() => setDashboardType("website")}
           className="fixed top-4 right-4 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all z-50 text-sm"
         >
           ← Back to Dashboards
@@ -251,7 +252,7 @@ const navigate = () => {
       <>
         <NAICOMDashboard />
         <button
-          onClick={() => setDashboardType("selector")}
+          onClick={() => setDashboardType("website")}
           className="fixed top-4 right-4 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all z-50 text-sm"
         >
           ← Back to Dashboards
@@ -263,7 +264,7 @@ const navigate = () => {
   if (dashboardType === "privacy") {
     return (
       <>
-        <PrivacyPolicy onBack={() => setDashboardType("selector")} />
+        <PrivacyPolicy onBack={() => setDashboardType("website")} />
       </>
     );
   }
@@ -271,7 +272,7 @@ const navigate = () => {
   if (dashboardType === "terms") {
     return (
       <>
-        <TermsOfService onBack={() => setDashboardType("selector")} />
+        <TermsOfService onBack={() => setDashboardType("website")} />
       </>
     );
   }
@@ -279,13 +280,10 @@ const navigate = () => {
   if (dashboardType === "service-provider") {
     return (
       <>
-        <ServiceProvider
-          onBack={() => setDashboardType("website")}
-        />
+        <ServiceProvider onBack={() => setDashboardType("website")} />
       </>
     );
   }
-
 
   // Agent Dashboard - Requires Login
   if (dashboardType === "agent") {
@@ -293,7 +291,7 @@ const navigate = () => {
       return (
         <AgentLogin
           onLogin={handleAgentLogin}
-          onBack={() => setDashboardType("selector")}
+          onBack={() => setDashboardType("website")}
         />
       );
     }
@@ -305,7 +303,7 @@ const navigate = () => {
 
       {/* Dashboard Switcher Button */}
       <button
-        onClick={() => setDashboardType("selector")}
+        onClick={() => setDashboardType("website")}
         className="fixed top-4 right-4 bg-white text-gray-700 px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all z-50 text-sm flex items-center gap-2"
       >
         <LayoutDashboard className="w-4 h-4" />
@@ -341,10 +339,10 @@ const navigate = () => {
         {currentScreen === "payout" && <PayoutHistory language={language} />}
         {currentScreen === "rural" && <RuralMode language={language} />}
         {currentScreen === "privacy" && (
-          <PrivacyPolicy onBack={() => handleNavigation("dashboard")} />
+          <PrivacyPolicy onBack={() => handleNavigation("website")} />
         )}
         {currentScreen === "terms" && (
-          <TermsOfService onBack={() => handleNavigation("dashboard")} />
+          <TermsOfService onBack={() => handleNavigation("website")} />
         )}
         {currentScreen === "recurring" && (
           <RecurringIncomeTracker language={language} />
