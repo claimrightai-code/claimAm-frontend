@@ -10,11 +10,10 @@ export interface WithdrawalResponse {
   status: string; // "success" (The API request status)
   message: string; // "Transfer has been queued"
   reference: string; // Your internal WDR-XXX reference
-  data: {
-    paystack_status: "success" | "pending" | "processing" | "failed";
-    transfer_code: string;
-    amount: number;
-  };
+
+  paystack_status: "success" | "pending" | "processing" | "reviewed" | "failed";
+  transfer_code: string;
+  amount: number;
 }
 
 export function useWithdraw() {
@@ -64,3 +63,7 @@ export function useWithdraw() {
   };
   return { banks, resolveAccount, withdraw };
 }
+
+
+
+

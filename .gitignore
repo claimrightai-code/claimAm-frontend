@@ -1,0 +1,81 @@
+web/app/node_modules
+./node_modules
+# local env files
+.env*.local
+node_modules
+./node_modules
+dist
+build
+################################################################################################
+# apps/api
+################################################################################################
+.idea
+.ipynb_checkpoints
+.mypy_cache
+.vscode
+__pycache__
+.pytest_cache
+htmlcov
+dist
+site
+.coverage*
+coverage.xml
+.netlify
+test.db
+log.txt
+Pipfile.lock
+env3.*
+env
+docs_build
+site_build
+venv
+docs.zip
+archive.zip
+
+# vim temporary files
+*~
+.*.sw?
+.cache
+
+# macOS
+.DS_Store
+
+################################################################################################
+# apps/web
+################################################################################################
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/apps/web/app/node_modules
+/apps/web/app/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/apps/web/app/coverage
+
+# next.js
+/apps/web/app/.next/
+/apps/web/app/out/
+
+# production
+/apps/web/app/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# vercel
+.vercel
+.env
+# typescript
+*.tsbuildinfo
+next-env.d.ts
