@@ -57,7 +57,7 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
 
     const timer = setTimeout(verify, 600); // Debounce
     return () => clearTimeout(timer);
-  }, [accountNumber, bankCode, resolveAccount]);
+  }, [accountNumber, bankCode]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
