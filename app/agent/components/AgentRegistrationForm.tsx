@@ -2,7 +2,15 @@
 
 import React, { useState, useEffect } from "react";
 import { usePaystackPayment } from "react-paystack";
-import { Lock, Briefcase, Loader2, Store, Users } from "lucide-react";
+import {
+  Lock,
+  Briefcase,
+  Loader2,
+  Store,
+  Users,
+  CheckCircle2,
+  AlertCircle,
+} from "lucide-react";
 import { useUserContext } from "@/hooks/hooks";
 import { isEmail, isPhone, scrollToFirstError } from "@/utils/validation";
 
@@ -75,6 +83,7 @@ export function AgentRegistrationForm({
     currentBusiness: "pos_point",
     footTraffic: "50 - 100",
     referralCode: "",
+    agreedToTerms: false,
   });
 
   // Validation state
@@ -115,7 +124,9 @@ export function AgentRegistrationForm({
     if (!formData.lga.trim()) errors.lga = "Please enter your LGA";
     if (!formData.shopLocation.trim())
       errors.shopLocation = "Please enter your shop address";
-
+    if (!formData.agreedToTerms) {
+      errors.agreedToTerms = "You must agree to the terms to continue";
+    }
     setFormErrors(errors);
     setIsValid(Object.keys(errors).length === 0);
 
@@ -464,7 +475,7 @@ export function AgentRegistrationForm({
                 <div className="flex items-center gap-2">
                   <Users className="w-4 h-4 text-blue-600" />
                   <label className="block text-slate-700 text-sm font-medium">
-                    Daily Foot Traffic
+                    Daily Car pass your spot
                   </label>
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -482,7 +493,7 @@ export function AgentRegistrationForm({
                     >
                       <input
                         type="radio"
-                        name="footTraffic"
+                        name="Number of cars"
                         value={range}
                         checked={formData.footTraffic === range}
                         onChange={(e) =>
@@ -515,12 +526,60 @@ export function AgentRegistrationForm({
               />
             </div>
 
+            <div className="pt-4">
+              <label
+                className={`flex items-start gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
+                  formData.agreedToTerms
+                    ? "bg-green-50 border-[#00BA00]"
+                    : "bg-slate-50 border-slate-100 hover:border-slate-200"
+                }`}
+              >
+                <div className="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    className="sr-only"
+                    checked={formData.agreedToTerms}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        agreedToTerms: e.target.checked,
+                      })
+                    }
+                  />
+                  <div
+                    className={`w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all ${
+                      formData.agreedToTerms
+                        ? "bg-[#00BA00] border-[#00BA00]"
+                        : "bg-white border-slate-300 group-hover:border-[#00BA00]"
+                    }`}
+                  >
+                    {formData.agreedToTerms && (
+                      <CheckCircle2 className="w-4 h-4 text-white" />
+                    )}
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p
+                    className={`text-sm leading-relaxed ${formData.agreedToTerms ? "text-green-800" : "text-slate-600"}`}
+                  >
+                    T & C may applied to{" "}
+                    <span className="font-bold underline">Agent Service</span> .
+                  </p>
+                </div>
+              </label>
+              {formErrors.agreedToTerms && (
+                <p className="text-xs text-red-600 mt-2 ml-1 flex items-center gap-1">
+                  <AlertCircle size={12} /> {formErrors.agreedToTerms}
+                </p>
+              )}
+            </div>
+
             {/* Submit Button */}
             <div className="pt-4">
               <button
                 type="submit"
                 disabled={loading || !isValid}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-blue-500/20 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95"
               >
                 {loading ? (
                   <>
@@ -532,10 +591,8 @@ export function AgentRegistrationForm({
                   </>
                 )}
               </button>
-              <p className="text-center text-slate-400 text-xs mt-4 leading-relaxed">
-                Registration is secured by Paystack.
-                <br />
-                By registering, you agree to our terms of service.
+              <p className="text-center text-slate-400 text-[10px] mt-4 leading-relaxed uppercase font-bold tracking-tighter">
+                Registration is secured by Paystack • Instant ID Generation
               </p>
             </div>
           </form>
