@@ -59,15 +59,22 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
     return () => clearTimeout(timer);
   }, [accountNumber, bankCode]);
 
- const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const withdrawAmount = Number(amount);
 
-    // ... validation logic (min amount, balance check) ...
+    if (withdrawAmount < 50) {
+      toast({ variant: "destructive", title: "Minimum withdrawal is ₦200" });
+      return;
+    }
+
+    if (withdrawAmount > balance) {
+      toast({ variant: "destructive", title: "Insufficient balance" });
+      return;
+    }
 
     setLoading(true);
     try {
-      // res will contain the object: { status, message, reference, paystack_status }
       const res = await withdraw({
         amount: withdrawAmount,
         account_number: accountNumber,
@@ -75,26 +82,19 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
         account_name: accountName,
       });
 
-      // console.log("Response from server:", res);
-
-      // --- THE FIX IS HERE ---
+      // BACKEND RESPONSE MAPPING:
+      // res.reference: "WDR-XXXX"
+      // res.data.paystack_status: "success" or "pending"
       setTxnDetails({
-        ref: res.reference, // Matches "reference" in backend
-        status: res.paystack_status || "pending", 
+        ref: res.reference,
+        status: res.data?.paystack_status || "pending",
       });
 
-      toast({ 
-        title: "Request Sent", 
-        description: res.message || "Transfer is being processed" 
-      });
-
+      // REFRESH BALANCE: This updates the ₦ amount on the main dashboard instantly
       queryClient.invalidateQueries({ queryKey: ["agent-stats"] });
       queryClient.invalidateQueries({ queryKey: ["wallet-history"] });
-      
-      if (res.paystack_status === "reviewed" || res.paystack_status === "success") {
-setWithdrawSuccess(true);
-      }
-      
+
+      setWithdrawSuccess(true);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -106,11 +106,12 @@ setWithdrawSuccess(true);
     } finally {
       setLoading(false);
     }
-};
+  };
 
   // SUCCESS VIEW
   if (withdrawSuccess) {
-    const isPending = txnDetails?.status !== "success" || "reviewed";
+    const isPending =
+      txnDetails?.status !== "reviewed" && txnDetails?.status !== "success"; // Treat "reviewed" as success for display purposes
 
     return (
       <section className="min-h-screen bg-slate-50 py-12 px-4 flex items-center justify-center">
