@@ -64,7 +64,7 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
     const withdrawAmount = Number(amount);
 
     if (withdrawAmount < 1000) {
-      toast({ variant: "destructive", title: "Minimum withdrawal is ₦200" });
+      toast({ variant: "destructive", title: "Minimum withdrawal is ₦1000" });
       return;
     }
 
