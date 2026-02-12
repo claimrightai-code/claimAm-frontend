@@ -46,8 +46,8 @@ export function useWithdraw() {
         headers: { Authorization: `Bearer ${cookies}` },
       },
     );
-    console.log(res);
-    console.log(res.data);
+    // console.log(res);
+    // console.log(res.data);
     return res?.data;
   };
 
@@ -64,7 +64,7 @@ export function useWithdraw() {
     const res = await api.post<WithdrawalResponse>("/wallet/withdraw", data, {
       headers: { Authorization: `Bearer ${cookies}` },
     });
-    console.log("withdrawal response:", res);
+    // console.log("withdrawal response:", res);
     return res.data;
   };
   return { banks, resolveAccount, withdraw };

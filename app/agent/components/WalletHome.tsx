@@ -21,8 +21,7 @@ export function WalletHome({ onNavigate }: WalletHomeProps) {
   // 2. Fetch Data Directly
   const { data: stats, isLoading } = useAgentStats();
 
-  // 3. Safe Fallback
-  console.log(stats);
+  
   const balance = stats?.wallet_balance || 0;
   
   return (

@@ -84,7 +84,7 @@ export default function App() {
   const balance = stats?.wallet_balance || 0;
   const total_referrals = stats?.total_referrals || 0;
   // console.log(stats)
-  console.log(balance, total_referrals);
+  
   const { data: notification } = useReferralNotification();
   //  console.log(stats, notification);
   // 3. WATCH FOR NEW NOTIFICATIONS
@@ -119,7 +119,7 @@ export default function App() {
   };
 
   const handleLoginComplete = (apiUser: any) => {
-    console.log("Logged in user data:", apiUser);
+    // console.log("Logged in user data:", apiUser);
 
     // setAgentData(Data);
 

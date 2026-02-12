@@ -1,20 +1,8 @@
 {
-  "app\\agent\\components\\DigitalAgentID.tsx -> html2canvas": {
-    "id": "app\\agent\\components\\DigitalAgentID.tsx -> html2canvas",
+  "utils\\utils.ts -> wowjs": {
+    "id": "utils\\utils.ts -> wowjs",
     "files": [
-      "static/chunks/_app-pages-browser_node_modules_html2canvas_dist_html2canvas_js.js"
-    ]
-  },
-  "app\\agent\\page.tsx -> ./components/AgentRegistrationForm": {
-    "id": "app\\agent\\page.tsx -> ./components/AgentRegistrationForm",
-    "files": [
-      "static/chunks/_app-pages-browser_app_agent_components_AgentRegistrationForm_tsx.js"
-    ]
-  },
-  "app\\agent\\page.tsx -> ./components/AgentSearchParams": {
-    "id": "app\\agent\\page.tsx -> ./components/AgentSearchParams",
-    "files": [
-      "static/chunks/_app-pages-browser_app_agent_components_AgentSearchParams_tsx.js"
+      "static/chunks/_app-pages-browser_node_modules_wowjs_dist_wow_js.js"
     ]
   }
 }

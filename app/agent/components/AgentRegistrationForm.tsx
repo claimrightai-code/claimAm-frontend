@@ -184,7 +184,7 @@ export function AgentRegistrationForm({
               );
             }
           } catch (error) {
-            console.error("Verification Error:", error);
+            // console.error("Verification Error:", error);
             alert("An error occurred during verification.");
           } finally {
             setLoading(false);
@@ -249,7 +249,7 @@ export function AgentRegistrationForm({
       }
       // }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       setLoading(false);
     }
   };

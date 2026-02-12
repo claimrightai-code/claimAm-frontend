@@ -15,7 +15,7 @@ export function useAgentStats() {
     queryKey: ["agent-stats", user?.id],
     queryFn: async () => {
       const res = await getAgentDashboardStats();
-      console.log(res)
+      // console.log(res)
       if (!res.ok) throw new Error("Failed");
       // if (!res.data) {
       //   return {
@@ -41,7 +41,7 @@ export function useWalletHistory() {
     queryKey: ["wallet-history", user?.id],
     queryFn: async () => {
       const res = await getWalletHistory();
-      console.log(res)
+      // console.log(res)
       if (!res.ok) throw new Error("Failed");
       return res;
     },

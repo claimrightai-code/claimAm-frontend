@@ -21,6 +21,7 @@ import { TermsOfService } from "../components/TermsOfService";
 import { AgentLogin } from "../components/AgentLogin";
 import { RecurringIncomeTracker } from "../components/agent/RecurringIncomeTracker";
 import { AgentTierProgress } from "../components/agent/AgentTierProgress";
+// import { WebApp } from "../components/WebApp";
 import ServiceProvider from "../components/ServiceProvider";
 import { usePathname, useRouter } from "next/navigation";
 

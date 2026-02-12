@@ -84,7 +84,7 @@ export default function Otppage({
       // Call the API to send the initial OTP
       // console.log(email);
       const res = await resendOtpFunc({ email });
-      console.log(res);
+      // console.log(res);
 
       if (res.ok) {
         toast({
@@ -98,7 +98,7 @@ export default function Otppage({
         setResendCooldown(0);
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       setHasRequestedOtp(false);
       setResendCooldown(0);
     } finally {
@@ -125,7 +125,7 @@ export default function Otppage({
     setResendCooldown(60);
 
     try {
-      console.log(email);
+      
       const res = await resendOtpFunc({ email });
       if (res.ok) {
         // Ensure we mark that an OTP was requested
@@ -139,7 +139,7 @@ export default function Otppage({
         setResendCooldown(0);
       }
     } catch (error) {
-      console.error(error);
+     
       setResendCooldown(0);
     } finally {
       setResending(false);

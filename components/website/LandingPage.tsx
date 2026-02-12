@@ -1,14 +1,14 @@
 "use client";
-import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { ClaimAmLogo } from '../ClaimAmLogo';
-import Image from 'next/image';
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { ClaimAmLogo } from "../ClaimAmLogo";
+import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import heroimage from "@/assets/images/assets/hero101.jpg";
 import motorist from "@/assets/images/assets/roadmotor.jpg";
 import woman from "@/assets/images/assets/woman.jpg";
-import { 
+import {
   Menu,
   X,
   ArrowRight,
@@ -38,42 +38,59 @@ import {
   Coins,
   BarChart3,
   AlertCircle,
-  TrendingUp
-} from 'lucide-react';
-import { motion } from 'motion/react';
-import { MagicTimeline } from './MagicTimeline';
+  TrendingUp,
+} from "lucide-react";
+import { motion } from "motion/react";
+import { MagicTimeline } from "./MagicTimeline";
 
 interface LandingPageProps {
-  onGetStarted?: () => void;
+  // onGetStarted?: () => void;
   onPrivacyClick?: () => void;
   onTermsClick?: () => void;
   onServiceProviderClick?: () => void;
 }
 
-export function LandingPage({ onGetStarted, onPrivacyClick, onTermsClick, onServiceProviderClick }: LandingPageProps) {
+export function LandingPage({
+  onPrivacyClick,
+  onTermsClick,
+  onServiceProviderClick,
+}: LandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [demoFormData, setDemoFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    message: "",
   });
-const router = useRouter();
+  const router = useRouter();
   const handleDemoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert('Thank you for your interest! Our team will contact you within 24 hours.');
-    setDemoFormData({ name: '', email: '', phone: '', company: '', message: '' });
+    alert(
+      "Thank you for your interest! Our team will contact you within 24 hours.",
+    );
+    setDemoFormData({
+      name: "",
+      email: "",
+      phone: "",
+      company: "",
+      message: "",
+    });
   };
 
   const scrollToSection = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
     setMobileMenuOpen(false);
   };
- const navigate = () => {
-   router.push("/agent");
-   return;
- };
+  const navigate = () => {
+    router.push("/agent");
+    return;
+  };
+
+  const onGetStarted = () => {
+    router.push("/user");
+    return;
+  };
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4">
@@ -277,7 +294,7 @@ const router = useRouter();
                   style={{ backgroundColor: "#00A878" }}
                 >
                   <Smartphone className="w-5 h-5 mr-2" />
-                  Get Started Free
+                  Get Started
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
@@ -1594,7 +1611,7 @@ const router = useRouter();
                   className="h-12 px-6 bg-[#00A878] hover:bg-[#00A878]/90"
                 >
                   <Smartphone className="w-4 h-4 mr-2" />
-                  Get Started Now
+                  Get Started
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
               </motion.div>
@@ -1778,7 +1795,7 @@ const router = useRouter();
                 className="text-lg h-14 px-8 bg-white text-[#0052CC] hover:bg-gray-100"
               >
                 <Smartphone className="w-5 h-5 mr-2" />
-                Get Started Free
+                Get Started
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button

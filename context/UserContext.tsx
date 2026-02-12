@@ -223,7 +223,6 @@ const loginFunc = async (params: any) => {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
 
-
     const data = response.data;
 
     if (data.access_token) {
@@ -238,7 +237,7 @@ const loginFunc = async (params: any) => {
       });
 
       const userData = userRes.data;
-      console.log(userData)
+      // console.log(userData)
       // Default route
       let redirectUrl = "/components/Dashboard";
 
@@ -249,7 +248,7 @@ const loginFunc = async (params: any) => {
         // Redirect to your OTP/Verification page
         // We append email so the verify page knows who to verify
         redirectUrl = `/verify-email?email=${userData.email}`;
-        console.log(redirectUrl);
+        // console.log(redirectUrl);
       } else {
         const isAgent = userData.roles.some((r: any) => r.name === "agent");
         const isAdmin = userData.roles.some((r: any) => r.name === "admin");
@@ -261,13 +260,13 @@ const loginFunc = async (params: any) => {
           if (userData.agent_profile?.status !== "active") {
             redirectUrl = `/agent-payment`; // Agent Dashboard
           } else {
-            redirectUrl = "/agent"; 
+            redirectUrl = "/agent";
           }
         }
       }
 
       setUser(userData);
-      console.log(redirectUrl)
+      // console.log(redirectUrl)
       return { ok: true, ...userData, redirectUrl: redirectUrl };
     }
 
@@ -284,46 +283,43 @@ const loginFunc = async (params: any) => {
   }
 };
 
- // 2. REGISTER: Uses JSON with snake_case
- const registerFunc = async (params: any) => {
-   try {
-     // Matches UserCreate Schema
-     const payload = {
-       email: params.email,
-       full_name: params.full_name, // Map camelCase -> snake_case
-       password: params.password,
-       // Only include these if your UserCreate schema allows them, otherwise they might cause 422 errors
-       phone_number: params.phone,
-       role_name: "user",
-       
-     };
+// 2. REGISTER: Uses JSON with snake_case
+const registerFunc = async (params: any) => {
+  try {
+    // Matches UserCreate Schema
+    const payload = {
+      email: params.email,
+      full_name: params.full_name, // Map camelCase -> snake_case
+      password: params.password,
+      // Only include these if your UserCreate schema allows them, otherwise they might cause 422 errors
+      phone_number: params.phone,
+      role_name: "user",
+    };
 
-     const response = await api.post(`/users/`, payload); // Standard REST path
-     const data = response.data;
+    const response = await api.post(`/users/`, payload); // Standard REST path
+    const data = response.data;
 
-     // FastAPI returns 201 Created on success
-     if (response.status === 201) {
-      
-       toast({
-         variant: "default",
-         title: "Registration successful",
-         description: "Account created! Please check your email for the OTP.",
-         style: { zIndex: 110000 },
-       });
-       return { ok: true, ...data };
-     }
-   } catch (error: any) {
-     const msg = getErrorMessage(error);
-     toast({
-       variant: "destructive",
-       title: "Registration error",
-       description: msg,
-       style: { zIndex: 110000 },
-     });
-     return { ok: false, message: msg };
-   }
- };
-
+    // FastAPI returns 201 Created on success
+    if (response.status === 201) {
+      toast({
+        variant: "default",
+        title: "Registration successful",
+        description: "Account created! Please check your email for the OTP.",
+        style: { zIndex: 110000 },
+      });
+      return { ok: true, ...data };
+    }
+  } catch (error: any) {
+    const msg = getErrorMessage(error);
+    toast({
+      variant: "destructive",
+      title: "Registration error",
+      description: msg,
+      style: { zIndex: 110000 },
+    });
+    return { ok: false, message: msg };
+  }
+};
 
 const registerAgentFunc = async (params: any) => {
   try {
@@ -342,7 +338,7 @@ const registerAgentFunc = async (params: any) => {
       naicom_license_id: params.naicomLicenseId || null,
       referral_code: params.referralCode || null,
     };
-    
+
     const response = await api.post(`/agents/register`, payload);
     const data = response.data;
     // console.log(data)
@@ -396,15 +392,12 @@ const initializeAgentPaymentFunc = async () => {
   }
 };
 
-const verifyPaymentFunc = async (
-  reference: string,
-  user_id: any
-) => {
+const verifyPaymentFunc = async (reference: string, user_id: any) => {
   try {
     // We send the reference to the backend to confirm valid payment
     const response = await api.get(`/payments/verify/${user_id}/${reference}`, {
-        headers: { Authorization: `Bearer ${cookies}` },
-      });
+      headers: { Authorization: `Bearer ${cookies}` },
+    });
 
     // Backend returns { status: "active", ... }
     if (response.data.status === "success") {
@@ -418,119 +411,116 @@ const verifyPaymentFunc = async (
   }
 };
 
- // 3. OTP: Uses verify-email endpoint
- const otpFunc = async (params: any) => {
-   try {
-     // Matches VerifyOtpRequest Schema
-     const response = await api.post(`/auth/verify-email`, {
-       email: params.email,
-       otp_code: params.otp.toString(), // Schema expects 'otp_code'
-     });
-    console.log(response)
-     const data = response.data;
-     return { ok: true, ...data };
-   } catch (error: any) {
-     const msg = getErrorMessage(error);
-     toast({
-       variant: "destructive",
-       title: "Verification failed",
-       description: msg,
-       style: { zIndex: 110000 },
-     });
-     return { ok: false, message: msg };
-   }
- };
+// 3. OTP: Uses verify-email endpoint
+const otpFunc = async (params: any) => {
+  try {
+    // Matches VerifyOtpRequest Schema
+    const response = await api.post(`/auth/verify-email`, {
+      email: params.email,
+      otp_code: params.otp.toString(), // Schema expects 'otp_code'
+    });
+    // console.log(response)
+    const data = response.data;
+    return { ok: true, ...data };
+  } catch (error: any) {
+    const msg = getErrorMessage(error);
+    toast({
+      variant: "destructive",
+      title: "Verification failed",
+      description: msg,
+      style: { zIndex: 110000 },
+    });
+    return { ok: false, message: msg };
+  }
+};
 
- // 4. FORGOT PASSWORD
- const forgotPasswordFunc = async (params: any) => {
-   try {
-     const response = await api.post(`/auth/forgot-password`, {
-       email: params.email,
-     });
+// 4. FORGOT PASSWORD
+const forgotPasswordFunc = async (params: any) => {
+  try {
+    const response = await api.post(`/auth/forgot-password`, {
+      email: params.email,
+    });
 
-     const data = response.data;
+    const data = response.data;
 
-     toast({
-       variant: "default",
-       title: "Check your email",
-       description: "An OTP has been sent to your inbox.",
-       style: { zIndex: 110000 },
-     });
+    toast({
+      variant: "default",
+      title: "Check your email",
+      description: "An OTP has been sent to your inbox.",
+      style: { zIndex: 110000 },
+    });
 
-     return { ok: true, ...data };
-   } catch (error: any) {
-     const msg = getErrorMessage(error);
-     toast({
-       variant: "destructive",
-       title: "Request failed",
-       description: msg,
-       style: { zIndex: 110000 },
-     });
-     return { ok: false, message: msg };
-   }
- };
+    return { ok: true, ...data };
+  } catch (error: any) {
+    const msg = getErrorMessage(error);
+    toast({
+      variant: "destructive",
+      title: "Request failed",
+      description: msg,
+      style: { zIndex: 110000 },
+    });
+    return { ok: false, message: msg };
+  }
+};
 
- // 5. CHANGE PASSWORD (RESET)
- const changePasswordFunc = async (params: any) => {
-   try {
-     const response = await api.post(`/auth/reset-password`, {
-       email: params.email,
-       otp_code: params.otp.toString(),
-       new_password: params.new_password, // map newPassword -> new_password
-     });
+// 5. CHANGE PASSWORD (RESET)
+const changePasswordFunc = async (params: any) => {
+  try {
+    const response = await api.post(`/auth/reset-password`, {
+      email: params.email,
+      otp_code: params.otp.toString(),
+      new_password: params.new_password, // map newPassword -> new_password
+    });
 
-     const data = response.data;
+    const data = response.data;
 
-     toast({
-       variant: "default",
-       title: "Password updated",
-       description: "You can now login with your new password.",
-       style: { zIndex: 110000 },
-     });
+    toast({
+      variant: "default",
+      title: "Password updated",
+      description: "You can now login with your new password.",
+      style: { zIndex: 110000 },
+    });
 
-     return { ok: true, ...data };
-   } catch (error: any) {
-     const msg = getErrorMessage(error);
-     toast({
-       variant: "destructive",
-       title: "Update failed",
-       description: msg,
-       style: { zIndex: 110000 },
-     });
-     return { ok: false, message: msg };
-   }
- };
-  const getBanks = async () => {
-    try {
-      const res = await api.get("/paga/get-banks");
-      const { response } = await res.data;
-      setBanks(response.banks);
-    } catch (error: any) {
-      return error?.response?.data?.message;
-    }
-  };
+    return { ok: true, ...data };
+  } catch (error: any) {
+    const msg = getErrorMessage(error);
+    toast({
+      variant: "destructive",
+      title: "Update failed",
+      description: msg,
+      style: { zIndex: 110000 },
+    });
+    return { ok: false, message: msg };
+  }
+};
+const getBanks = async () => {
+  try {
+    const res = await api.get("/paga/get-banks");
+    const { response } = await res.data;
+    setBanks(response.banks);
+  } catch (error: any) {
+    return error?.response?.data?.message;
+  }
+};
 
 const resendOtpFunc = async (params: any) => {
-  try{
-       const response = await api.post(`/auth/resend-otp?email=${params.email}`);
-       console.log(response)
-       return {ok: true, message: response.data.message}
-  } catch(error:any){
-    const msg = getErrorMessage(error)
-    return {ok: false, message: msg};
+  try {
+    const response = await api.post(`/auth/resend-otp?email=${params.email}`);
+    //  console.log(response)
+    return { ok: true, message: response.data.message };
+  } catch (error: any) {
+    const msg = getErrorMessage(error);
+    return { ok: false, message: msg };
   }
-}
-
-
-
+};
 
 const getAgentDashboardStats = async () => {
   try {
     const response = await api.get(`/dashboard/stats`, {
       headers: { Authorization: `Bearer ${cookies}` },
     });
-    console.log(response)
-      return { ok: true, ...response.data };
+    // console.log(response)
+    return { ok: true, ...response.data };
   } catch (error: any) {
     const msg = getErrorMessage(error);
     return { ok: false, message: msg };

@@ -63,8 +63,8 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
     e.preventDefault();
     const withdrawAmount = Number(amount);
 
-    if (withdrawAmount < 200) {
-      toast({ variant: "destructive", title: "Minimum withdrawal is ₦200" });
+    if (withdrawAmount < 1000) {
+      toast({ variant: "destructive", title: "Minimum withdrawal is ₦1000" });
       return;
     }
 
@@ -82,9 +82,7 @@ export function WithdrawPage({ balance, onBack }: WithdrawPageProps) {
         account_name: accountName,
       });
 
-      // BACKEND RESPONSE MAPPING:
-      // res.reference: "WDR-XXXX"
-      // res.data.paystack_status: "success" or "pending"
+    
       setTxnDetails({
         ref: res.reference,
         status: res.data?.paystack_status || "pending",
