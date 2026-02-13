@@ -6,22 +6,30 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { ClaimAmLogo } from '../ClaimAmLogo';
 import { Phone, Lock, Smartphone, Users, MessageSquare } from 'lucide-react';
-
+import { useUserContext } from "@/hooks/hooks";
 interface WebLoginProps {
-  onLogin: () => void;
+  onLogin: (params: any) => void;
   onSignup: () => void;
   onForgotPassword: () => void;
 }
 
 export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps) {
-  const [phone, setPhone] = useState('');
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState('');
+ const { loginFunc } = useUserContext();
+ // const handleSubmit = (e: React.FormEvent) => {
+ //   e.preventDefault();
+ //   onLogin();
+ // };
+ const handleSubmit = async (e: any) => {
+   e.preventDefault();
+   const result = await loginFunc({ email, password });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onLogin();
-  };
-
+   if (result.ok) {
+     // This calls the 'onLogin' prop we passed in the page above
+     onLogin(result);
+   }
+ };
   return (
     <div className="min-h-screen flex">
       {/* Left Side - Login Form */}
@@ -48,11 +56,11 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+234 XXX XXX XXXX"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  id="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="pl-10"
                   required
                 />
@@ -92,7 +100,7 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
             <Button
               type="submit"
               className="w-full h-12 text-base"
-              style={{ backgroundColor: '#00A878' }}
+              style={{ backgroundColor: "#00A878" }}
             >
               Sign In
             </Button>
@@ -122,7 +130,7 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
           {/* Sign Up Link */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <button
                 onClick={onSignup}
                 className="text-[#0052CC] font-medium hover:underline"
@@ -141,10 +149,10 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
             Accessible, Faster, Smarter Insurance Claims
           </h2>
           <p className="text-xl text-white/90 mb-8">
-            File claims from anywhere using our AI-powered platform. 
-            Dial *669# from any phone or visit our trusted agents near you.
+            File claims from anywhere using our AI-powered platform. Dial *669#
+            from any phone or visit our trusted agents near you.
           </p>
-          
+
           <div className="space-y-4">
             <div className="flex items-start gap-3">
               <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -152,7 +160,9 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
               </div>
               <div>
                 <h3 className="font-semibold mb-1">Multi-Channel Access</h3>
-                <p className="text-white/80 text-sm">Web, mobile app, USSD *669#, or physical agents</p>
+                <p className="text-white/80 text-sm">
+                  Web, mobile app, USSD *669#, or physical agents
+                </p>
               </div>
             </div>
 
@@ -162,7 +172,9 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
               </div>
               <div>
                 <h3 className="font-semibold mb-1">AI-Powered Verification</h3>
-                <p className="text-white/80 text-sm">Fast, secure claim processing with advanced fraud detection</p>
+                <p className="text-white/80 text-sm">
+                  Fast, secure claim processing with advanced fraud detection
+                </p>
               </div>
             </div>
 
@@ -172,16 +184,21 @@ export function WebLogin({ onLogin, onSignup, onForgotPassword }: WebLoginProps)
               </div>
               <div>
                 <h3 className="font-semibold mb-1">106M+ Underserved Users</h3>
-                <p className="text-white/80 text-sm">Serving rural Nigeria, expanding to 1.4B+ Africans</p>
+                <p className="text-white/80 text-sm">
+                  Serving rural Nigeria, expanding to 1.4B+ Africans
+                </p>
               </div>
             </div>
           </div>
 
           <div className="mt-8 p-4 bg-white/10 rounded-lg backdrop-blur-sm">
             <p className="text-sm italic">
-              "I got my ₦150,000 motor claim in 2 days using *669#. ClaimAm made it so easy!"
+              "I got my ₦150,000 motor claim in 2 days using *669#. ClaimAm made
+              it so easy!"
             </p>
-            <p className="text-xs mt-2 text-white/70">— Oluwaseun Adeyemi, Lagos</p>
+            <p className="text-xs mt-2 text-white/70">
+              — Oluwaseun Adeyemi, Lagos
+            </p>
           </div>
         </div>
       </div>

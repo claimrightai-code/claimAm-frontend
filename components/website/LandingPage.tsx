@@ -88,9 +88,10 @@ export function LandingPage({
   };
 
   const onGetStarted = () => {
-    router.push("/user");
+    // router.push("/user");
+    alert("coming soon!");
     return;
-  };
+  };;
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto px-4">

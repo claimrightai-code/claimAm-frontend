@@ -1,8 +1,7 @@
-
 "use client";
 
-import React, { useState } from 'react';
-import { WebLogin } from '@/../../components/webapp/WebLogin';
+import React, { useEffect, useState } from "react";
+import { WebLogin } from "@/../../components/webapp/WebLogin";
 import { WebSignup } from "@/../../components/webapp/WebSignup";
 import { WebDashboard } from "@/../../components/webapp/WebDashboard";
 import { WebFileClaimFlow } from "@/../../components/webapp/WebFileClaimFlow";
@@ -10,10 +9,19 @@ import { WebClaimsList } from "@/../../components/webapp/WebClaimsList";
 import { WebClaimDetails } from "@/../../components/webapp/WebClaimDetails";
 import { WebProfile } from "@/../../components/webapp/WebProfile";
 import { WebSubscription } from "@/../../components/webapp/WebSubscription";
+import { useUserContext } from "@/hooks/hooks";
 
-export type WebScreen = 
-  | 'login' | 'signup' | 'forgot-password' | 'dashboard' | 'file-claim' 
-  | 'claims-list' | 'claim-details' | 'profile' | 'subscription' | 'documents';
+export type WebScreen =
+  | "login"
+  | "signup"
+  | "forgot-password"
+  | "dashboard"
+  | "file-claim"
+  | "claims-list"
+  | "claim-details"
+  | "profile"
+  | "subscription"
+  | "documents";
 
 export interface ClaimData {
   id?: string;
@@ -32,47 +40,50 @@ export interface ClaimData {
 }
 
 export default function App() {
-  const [currentScreen, setCurrentScreen] = useState<WebScreen>('login');
+  const [currentScreen, setCurrentScreen] = useState<WebScreen>("login");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [selectedClaim, setSelectedClaim] = useState<ClaimData | null>(null);
+  const { user, logoutFunc } = useUserContext();
+  console.log(user);
 
   const handleLogin = () => {
-    setIsAuthenticated(true);
-    setCurrentScreen('dashboard');
+    // setIsAuthenticated(true);
+    setCurrentScreen("dashboard");
   };
 
   const handleSignup = () => {
-    setCurrentScreen('subscription');
+    setCurrentScreen("subscription");
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    setCurrentScreen('login');
+    logoutFunc();
+    setCurrentScreen("login");
   };
 
   // Render authentication screens
-  if (!isAuthenticated) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-gray-50">
-        {currentScreen === 'login' && (
-          <WebLogin 
+        {currentScreen === "login" && (
+          <WebLogin
             onLogin={handleLogin}
-            onSignup={() => setCurrentScreen('signup')}
-            onForgotPassword={() => setCurrentScreen('forgot-password')}
-          />
-        )}
-        
-        {currentScreen === 'signup' && (
-          <WebSignup 
-            onSignup={handleSignup}
-            onLogin={() => setCurrentScreen('login')}
+            onSignup={() => setCurrentScreen("signup")}
+            onForgotPassword={() => setCurrentScreen("forgot-password")}
           />
         )}
 
-        {currentScreen === 'subscription' && (
-          <WebSubscription 
+        {currentScreen === "signup" && (
+          <WebSignup
+            onSignup={handleSignup}
+            onLogin={() => setCurrentScreen("login")}
+          />
+        )}
+
+        {currentScreen === "subscription" && (
+          <WebSubscription
             onComplete={handleLogin}
-            onBack={() => setCurrentScreen('signup')}
+            onBack={() => setCurrentScreen("signup")}
           />
         )}
       </div>
@@ -82,44 +93,38 @@ export default function App() {
   // Render main application screens
   return (
     <div className="min-h-screen bg-gray-50">
-      {currentScreen === 'dashboard' && (
-        <WebDashboard 
-          onNavigate={setCurrentScreen}
-          onLogout={handleLogout}
+      {currentScreen === "dashboard" && (
+        <WebDashboard onNavigate={setCurrentScreen} onLogout={handleLogout} />
+      )}
+
+      {currentScreen === "file-claim" && (
+        <WebFileClaimFlow
+          onComplete={() => setCurrentScreen("claims-list")}
+          onCancel={() => setCurrentScreen("dashboard")}
         />
       )}
 
-      {currentScreen === 'file-claim' && (
-        <WebFileClaimFlow 
-          onComplete={() => setCurrentScreen('claims-list')}
-          onCancel={() => setCurrentScreen('dashboard')}
-        />
-      )}
-
-      {currentScreen === 'claims-list' && (
-        <WebClaimsList 
+      {currentScreen === "claims-list" && (
+        <WebClaimsList
           onNavigate={setCurrentScreen}
           onSelectClaim={(claim) => {
             setSelectedClaim(claim);
-            setCurrentScreen('claim-details');
+            setCurrentScreen("claim-details");
           }}
           onLogout={handleLogout}
         />
       )}
 
-      {currentScreen === 'claim-details' && (
-        <WebClaimDetails 
+      {currentScreen === "claim-details" && (
+        <WebClaimDetails
           onNavigate={setCurrentScreen}
           onLogout={handleLogout}
           claim={selectedClaim}
         />
       )}
 
-      {currentScreen === 'profile' && (
-        <WebProfile 
-          onNavigate={setCurrentScreen}
-          onLogout={handleLogout}
-        />
+      {currentScreen === "profile" && (
+        <WebProfile onNavigate={setCurrentScreen} onLogout={handleLogout} />
       )}
     </div>
   );
